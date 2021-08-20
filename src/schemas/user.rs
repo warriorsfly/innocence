@@ -29,12 +29,12 @@ impl User {
         &self.avatar
     }
 
-    #[graphql(description = "user's book history")]
-    pub fn book_histories(&self, ctx: &DataContext) -> &Vec<Book> {
-        let ref mut conn = ctx.database.get()?;
-        let ur = users::table.find(id).get_result(conn)?;
-        Ok(ur)
-    }
+    // #[graphql(description = "user's book history")]
+    // pub fn book_histories(&self, ctx: &DataContext) -> &Vec<Book> {
+    //     let ref mut conn = ctx.database.get()?;
+    //     let ur = users::table.find(id).get_result(conn)?;
+    //     Ok(ur)
+    // }
 }
 
 #[derive(Debug, GraphQLInputObject, Validate)]
