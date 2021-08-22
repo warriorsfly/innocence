@@ -1,8 +1,8 @@
 use diesel::{prelude::*, QueryResult};
-use juniper::{graphql_object, GraphQLInputObject};
+use juniper::{graphql_object, FieldResult, GraphQLInputObject};
 use validator::Validate;
 
-use crate::entity::{NewUser, User};
+use crate::entity::{Book, NewUser, User};
 
 use super::{Connection, DataContext};
 
@@ -29,12 +29,20 @@ impl User {
         &self.avatar
     }
 
-    // #[graphql(description = "user's book history")]
-    // pub fn book_histories(&self, ctx: &DataContext) -> &Vec<Book> {
-    //     let ref mut conn = ctx.database.get()?;
-    //     let ur = users::table.find(id).get_result(conn)?;
-    //     Ok(ur)
-    // }
+    #[graphql(description = "user's book history")]
+    pub fn favorites(&self, ctx: &DataContext) -> FieldResult<Vec<Book>> {
+        use crate::schema::{
+            books::{self, dsl::*},
+            favorite_books::{self, dsl::*},
+        };
+        let ref mut conn = ctx.database.get()?;
+        let list = favorite_books
+            .filter(favorite_books::user_id.eq(self.id))
+            .inner_join(books.on(favorite_books::book_id.eq(books::id)))
+            .select(books::all_columns)
+            .get_results(conn)?;
+        Ok(list)
+    }
 }
 
 #[derive(Debug, GraphQLInputObject, Validate)]

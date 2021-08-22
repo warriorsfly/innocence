@@ -1,4 +1,3 @@
-use actix_web::web::Data;
 use diesel::prelude::*;
 use juniper::{graphql_object, EmptySubscription, FieldError, FieldResult, RootNode};
 use validator::Validate;
@@ -15,7 +14,7 @@ pub struct Query;
 #[graphql_object(context = DataContext)]
 impl Query {
     #[graphql(arguments(id(description = "id of the user")))]
-    async fn user(ctx: &DataContext, id: i32) -> FieldResult<User> {
+    async fn users(ctx: &DataContext, id: i32) -> FieldResult<User> {
         let ref mut conn = ctx.database.get()?;
         let ur = users::table.find(id).get_result(conn)?;
         Ok(ur)

@@ -1,19 +1,18 @@
 
 CREATE TABLE books (
     id SERIAL PRIMARY KEY,
-    author_id int NOT NULL REFERENCES users (id),
+    authors TEXT[] NOT NULL,
     slug TEXT UNIQUE NOT NULL,
     name TEXT NOT NULL,
     cover TEXT NOT NULL,
     description TEXT NOT NULL,
-    body TEXT NOT NULL,
     tags TEXT[] NOT NULL,
     favorites_count int NOT NULL DEFAULT 0,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX books_author_id_idx ON books (author_id);
+CREATE INDEX books_authors_idx ON books (authors);
 -- indices are already created for slugs, as slugs are unique as per the spec
 
 SELECT diesel_manage_updated_at('books');

@@ -1,36 +1,54 @@
 use diesel::prelude::*;
 use juniper::{graphql_object, FieldResult};
 
-use crate::entity::{Book, Episode};
+use crate::{
+    constants::DATE_FORMAT,
+    entity::{Book, Episode},
+};
 
 use super::DataContext;
 
 #[graphql_object(context = DataContext)]
 impl Book {
-    pub fn id(&self) -> &i32 {
+    pub async fn id(&self) -> &i32 {
         &self.id
     }
+
+    pub async fn authors(&self) -> &Vec<String> {
+        &self.authors
+    }
+
     #[graphql(description = "book's slug url")]
-    pub fn slug(&self) -> &str {
+    pub async fn slug(&self) -> &str {
         &self.slug
     }
 
     #[graphql(description = "book's name")]
-    pub fn name(&self) -> &str {
+    pub async fn name(&self) -> &str {
         &self.name
     }
 
-    #[graphql(description = "user's email")]
-    pub fn cover(&self) -> &str {
+    #[graphql(description = "book's cover image url")]
+    pub async fn cover(&self) -> &str {
         &self.cover
     }
-    #[graphql(description = "user's bio")]
-    pub fn description(&self) -> &str {
+    #[graphql(description = "book's description")]
+    pub async fn description(&self) -> &str {
         &self.description
     }
-    #[graphql(description = "user's avatar")]
-    pub fn tags(&self) -> &Vec<String> {
+    #[graphql(description = "book's tags,for search")]
+    pub async fn tags(&self) -> &Vec<String> {
         &self.tags
+    }
+
+    #[graphql(description = "book's create time")]
+    pub async fn created_at(&self) -> String {
+        self.created_at.format(DATE_FORMAT).to_string()
+    }
+
+    #[graphql(description = "book's update time")]
+    pub async fn updated_at(&self) -> String {
+        self.updated_at.format(DATE_FORMAT).to_string()
     }
 
     #[graphql(description = "all the episodes in the book")]

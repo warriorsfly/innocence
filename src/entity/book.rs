@@ -1,12 +1,14 @@
+use chrono::{DateTime, Utc};
 use diesel::{self, prelude::*};
 use serde::{Deserialize, Serialize};
 
 use crate::schema::{books, episodes};
 
-#[derive(Deserialize, Serialize, Debug, Queryable)]
+#[derive(Deserialize, Serialize, Debug, Queryable, Selectable)]
 pub struct Book {
     /// ID
     pub id: i32,
+    pub authors: Vec<String>,
     pub slug: String,
     /// 名称
     pub name: String,
@@ -14,23 +16,19 @@ pub struct Book {
     pub cover: String,
     /// 描述
     pub description: String,
-    /// 作者
-    // pub authors: Vec<AuthorJson>,
     /// 标签
     pub tags: Vec<String>,
-    /// 章节
-    // pub episodes: Vec<EpisodeJson>,
     /// 喜爱数量
-    pub favorite_count: i32,
-
-    pub score: f32,
-    /// 是否连载
-    pub serialing: bool,
+    pub favorites_count: i32,
+    /// 创建时间
+    pub created_at: DateTime<Utc>,
+    /// 更新时间
+    pub updated_at: DateTime<Utc>,
 }
 #[derive(Debug, Insertable)]
 #[table_name = "books"]
 struct NewBook<'a> {
-    pub author_id: &'a i32,
+    pub authors: &'a Vec<String>,
     pub slug: &'a str,
     pub name: &'a str,
     pub description: &'a str,
