@@ -83,10 +83,12 @@ pub struct UserLoginOutput {
 
 #[graphql_object(Context = DataContext)]
 impl UserLoginOutput {
+    #[graphql(description = "jwt token string for user")]
     pub async fn token(&self) -> &str {
         &self.token
     }
 
+    #[graphql(description = "user base info")]
     pub async fn account(&self) -> &User {
         &self.account
     }
