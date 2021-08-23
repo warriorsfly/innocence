@@ -3,12 +3,14 @@ use juniper::{graphql_object, EmptySubscription, FieldError, FieldResult, RootNo
 use validator::Validate;
 
 use crate::{
-    claims::hash,
+    claims::{create_jwt, hash, Claims},
     entity::{NewUser, User},
     schema::users,
 };
 
-use super::{find_by_email, regist_by_email, DataContext, NewUserInput, UserLoginInput};
+use super::{
+    find_by_email, regist_by_email, DataContext, NewUserInput, UserLoginInput, UserLoginOutput,
+};
 pub struct Query;
 
 #[graphql_object(context = DataContext)]
@@ -32,7 +34,7 @@ pub struct Mutation;
 #[graphql_object(Context = DataContext)]
 impl Mutation {
     #[graphql(description = "sign up a new user by email")]
-    fn signup(ctx: &DataContext, entity: NewUserInput) -> FieldResult<User> {
+    async fn signup(ctx: &DataContext, entity: NewUserInput) -> FieldResult<User> {
         entity.validate()?;
         let ref mut conn = ctx.database.get()?;
         let psw = hash(&entity.password);
@@ -47,12 +49,17 @@ impl Mutation {
     }
 
     #[graphql(description = "login into inno")]
-    fn login(ctx: &DataContext, entity: UserLoginInput) -> FieldResult<User> {
+    fn login(ctx: &DataContext, entity: UserLoginInput) -> FieldResult<UserLoginOutput> {
         entity.validate()?;
         let hashed = hash(&entity.password);
         let ref mut conn = ctx.database.get()?;
         let user = find_by_email(conn, &entity.email, &hashed)?;
-        Ok(user)
+        let claims = Claims::new(user.id);
+        let user_login_output = UserLoginOutput {
+            token: create_jwt(claims)?,
+            account: user,
+        };
+        Ok(user_login_output)
     }
 }
 

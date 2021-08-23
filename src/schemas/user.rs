@@ -76,6 +76,22 @@ pub struct UserLoginInput {
     pub password: String,
 }
 
+pub struct UserLoginOutput {
+    pub token: String,
+    pub account: User,
+}
+
+#[graphql_object(Context = DataContext)]
+impl UserLoginOutput {
+    pub async fn token(&self) -> &str {
+        &self.token
+    }
+
+    pub async fn account(&self) -> &User {
+        &self.account
+    }
+}
+
 pub fn regist_by_email<'a>(conn: &'a mut Connection, entity: NewUser<'a>) -> QueryResult<User> {
     use crate::schema::users::dsl::*;
     diesel::insert_into(users)
