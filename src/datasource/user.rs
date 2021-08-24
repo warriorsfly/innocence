@@ -48,6 +48,7 @@ pub struct NewUserInput {
     pub username: String,
     #[validate(email(message = "email must be a valid email"))]
     pub email: String,
+    #[validate(length(min = 6))]
     pub password: String,
     pub bio: Option<String>,
     pub avatar: Option<String>,
@@ -68,7 +69,7 @@ pub struct UserLoginInput {
     pub password: String,
 }
 
-#[derive(Debug, Validate)]
+#[derive(Debug, Deserialize, Serialize, Validate)]
 pub struct UserLoginOutput {
     pub token: String,
     pub account: User,
@@ -91,8 +92,9 @@ pub(crate) fn login<'a>(
     use crate::schema::users::dsl::*;
     let hashed = hash(psw);
 
-    let user = users
-        .filter(username.eq(name) && password.eq(&hashed))
+    let user: User = users
+        .filter(username.eq(name))
+        .filter(password.eq(&hashed))
         .get_result(conn)?;
     let claims = Claims::new(user.id);
     let user_login_output = UserLoginOutput {

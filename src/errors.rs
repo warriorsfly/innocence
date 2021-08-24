@@ -18,6 +18,8 @@ pub enum Error {
     NotFound(String),
     DataBaseError(String),
     Unauthorized(String),
+    #[display(fmt = "")]
+    ValidateError(Vec<String>),
 }
 
 /// User-friendly error messages

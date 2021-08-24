@@ -1,18 +1,18 @@
 use actix_web::web::{Data, Json};
-use diesel::prelude::*;
-use validator::Validate;
 
 use crate::{
-    claims::{create_jwt, hash, Claims},
+    claims::hash,
     datasource::{self, Database, NewUser, NewUserInput, User, UserLoginInput, UserLoginOutput},
     errors::Error,
+    helpers::respond_json,
+    validate::validate,
 };
 
-pub(crate) async fn signup(
+pub async fn signup(
     database: Data<Database>,
     entity: Json<NewUserInput>,
-) -> Result<User, Error> {
-    // entity.validate()?;
+) -> Result<Json<User>, Error> {
+    validate(&entity)?;
     let ref mut conn = database.get()?;
     let psw = hash(&entity.password);
     let ur = NewUser {
@@ -22,13 +22,15 @@ pub(crate) async fn signup(
         bio: "",
         avatar: "",
     };
-    datasource::signup(conn, &ur)
+    let us = datasource::signup(conn, &ur)?;
+    respond_json(us)
 }
-pub(crate) fn login(
-    database: &Data<Database>,
+pub async fn login(
+    database: Data<Database>,
     entity: Json<UserLoginInput>,
-) -> Result<UserLoginOutput, Error> {
-    entity.validate()?;
+) -> Result<Json<UserLoginOutput>, Error> {
+    validate(&entity)?;
     let ref mut conn = database.get()?;
-    datasource::login(conn, &entity.name, &entity.password)
+    let res = datasource::login(conn, &entity.name, &entity.password)?;
+    respond_json(res)
 }
