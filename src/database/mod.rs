@@ -3,7 +3,7 @@ use diesel::{
     r2d2::{ConnectionManager, Pool, PooledConnection},
     PgConnection,
 };
-use crate::{claims::Claims, config::CONFIG};
+use crate::{jwt::Claims, config::CONFIG};
 
 mod book;
 mod pagination;

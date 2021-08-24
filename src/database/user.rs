@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 use crate::{
-    claims::{create_jwt, hash, Claims},
+    jwt::{create_jwt, hash, Claims},
     errors::Error,
     schema::users,
 };
