@@ -1,7 +1,7 @@
 use crate::{
     config::CONFIG,
     routes::routes,
-    datasource::{add_database},
+    database::{add_database},
 };
 
 use actix_web::{middleware::Logger, App, HttpServer};

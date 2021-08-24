@@ -7,8 +7,8 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
         web::scope("/api")
             .service(
                 web::scope("/user")
-                    .route("signup", web::post().to(handlers::signup))
-                    .route("login", web::post().to(handlers::login)),
+                    .route("signup", web::post().to(handlers::user::signup))
+                    .route("login", web::post().to(handlers::user::login)),
             )
             // .service(
             //     web::scope("/users").route("/{id}", web::get().to(user::get_user)), // .route("", web::get().to(get_users))

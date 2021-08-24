@@ -15,7 +15,7 @@ mod helpers;
 mod middleware;
 mod routes;
 mod schema;
-mod datasource;
+mod database;
 mod claims;
 mod server;
 mod tests;

@@ -2,7 +2,7 @@ use actix_web::web::{Data, Json};
 
 use crate::{
     claims::hash,
-    datasource::{self, Database, NewUser, NewUserInput, User, UserLoginInput, UserLoginOutput},
+    database::{self, Database, NewUser, NewUserInput, User, UserLoginInput, UserLoginOutput},
     errors::Error,
     helpers::respond_json,
     validate::validate,
@@ -22,7 +22,7 @@ pub async fn signup(
         bio: "",
         avatar: "",
     };
-    let us = datasource::signup(conn, &ur)?;
+    let us = database::signup(conn, &ur)?;
     respond_json(us)
 }
 pub async fn login(
@@ -31,6 +31,6 @@ pub async fn login(
 ) -> Result<Json<UserLoginOutput>, Error> {
     validate(&entity)?;
     let ref mut conn = database.get()?;
-    let res = datasource::login(conn, &entity.name, &entity.password)?;
+    let res = database::login(conn, &entity.name, &entity.password)?;
     respond_json(res)
 }

@@ -1,4 +1,2 @@
-mod book;
-mod user;
-
-pub use self::user::*;
+pub mod book;
+pub mod user;
