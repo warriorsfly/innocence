@@ -1,16 +1,49 @@
-use actix_web::guard::Connect;
-use diesel::{prelude::*, QueryResult};
+use chrono::{DateTime, Utc};
+use diesel::prelude::*;
+use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 use crate::{
     claims::{create_jwt, hash, Claims},
     errors::Error,
-    model::{NewUser, User},
+    schema::users,
 };
 
 use super::{Connection, Database};
 
-#[derive(Debug, Validate)]
+#[derive(Debug, Deserialize, Queryable, Identifiable, Serialize)]
+pub struct User {
+    pub id: i32,
+    pub username: String,
+    pub email: String,
+    #[serde(skip_serializing)]
+    pub password: String,
+    pub bio: String,
+    pub avatar: String,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
+#[derive(Debug, Insertable)]
+#[table_name = "users"]
+pub struct NewUser<'a> {
+    pub username: &'a str,
+    pub email: &'a str,
+    pub password: &'a str,
+    pub bio: &'a str,
+    pub avatar: &'a str,
+}
+
+#[derive(Debug, AsChangeset)]
+#[table_name = "users"]
+pub struct UserChange {
+    pub username: Option<String>,
+    pub email: Option<String>,
+    pub password: Option<String>,
+    pub bio: Option<String>,
+    pub avatar: Option<String>,
+}
+
+#[derive(Debug, Deserialize, Serialize, Validate)]
 pub struct NewUserInput {
     pub username: String,
     #[validate(email(message = "email must be a valid email"))]
@@ -19,6 +52,8 @@ pub struct NewUserInput {
     pub bio: Option<String>,
     pub avatar: Option<String>,
 }
+
+#[derive(Debug, Deserialize, Serialize, Validate)]
 pub struct UpdateUserInput {
     pub username: Option<String>,
     pub email: Option<String>,
@@ -27,31 +62,38 @@ pub struct UpdateUserInput {
     pub avatar: Option<String>,
 }
 
+#[derive(Debug, Deserialize, Serialize, Validate)]
 pub struct UserLoginInput {
-    pub email: String,
+    pub name: String,
     pub password: String,
 }
 
+#[derive(Debug, Validate)]
 pub struct UserLoginOutput {
     pub token: String,
     pub account: User,
 }
 
-async fn signup<'a>(conn: &'a mut Connection, entity: NewUserInput) -> Result<User, Error> {
-    let psw = hash(&entity.password);
-    let ur = NewUser {
-        username: &entity.username,
-        email: &entity.email,
-        password: &psw,
-        bio: &entity.bio.unwrap_or("".into()),
-        avatar: &entity.avatar.unwrap_or("".into()),
-    };
-}
-fn login(database: &Database, entity: UserLoginInput) -> Result<UserLoginOutput, Error> {
+pub(crate) fn signup<'a>(conn: &'a mut Connection, entity: &'a NewUser) -> Result<User, Error> {
+    use crate::schema::users::dsl::*;
 
-    let hashed = hash(&entity.password);
-    let ref mut conn = database.get()?;
-    let user = login(conn, &entity.email, &hashed)?;
+    diesel::insert_into(users)
+        .values(entity)
+        .get_result::<User>(conn)
+        .map_err(|err| Error::DataBaseError(err.to_string()))
+}
+
+pub(crate) fn login<'a>(
+    conn: &'a mut Connection,
+    name: &'a str,
+    psw: &'a str,
+) -> Result<UserLoginOutput, Error> {
+    use crate::schema::users::dsl::*;
+    let hashed = hash(psw);
+
+    let user = users
+        .filter(username.eq(name) && password.eq(&hashed))
+        .get_result(conn)?;
     let claims = Claims::new(user.id);
     let user_login_output = UserLoginOutput {
         token: create_jwt(claims)?,

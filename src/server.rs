@@ -1,7 +1,7 @@
 use crate::{
     config::CONFIG,
     routes::routes,
-    datasource::{add_database, data_graphql},
+    datasource::{add_database},
 };
 
 use actix_web::{middleware::Logger, App, HttpServer};
@@ -16,7 +16,7 @@ pub(crate) async fn serv() -> std::io::Result<()> {
             .wrap(Logger::default())
             // 连接数据库
             .configure(add_database)
-            .configure(data_graphql)
+            // .configure(data_graphql)
             // 注册路由
             .configure(routes)
     })
