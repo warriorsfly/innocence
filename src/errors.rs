@@ -36,7 +36,7 @@ impl<String> Deref for ErrorResponse<String> {
     }
 }
 
-/// 自定义错误
+/// custom error
 impl ResponseError for Error {
     fn status_code(&self) -> StatusCode {
         match self {
@@ -54,15 +54,6 @@ impl ResponseError for Error {
     }
 }
 
-//  match self {
-//             ServError::BadRequest(error) => StatusCode::BAD_REQUEST,
-//             ServError::NotFound(_) => StatusCode::NOT_FOUND,
-//             ServError::ValidationError(_) => StatusCode::UNPROCESSABLE_ENTITY,
-//             ServError::Unauthorized(_) => StatusCode::UNAUTHORIZED,
-//             _ => StatusCode::INTERNAL_SERVER_ERROR,
-//         }
-
-/// 将Vec<String>转化为ErrorResponse
 impl From<Vec<String>> for ErrorResponse<String> {
     fn from(errors: Vec<String>) -> Self {
         ErrorResponse { errors }
