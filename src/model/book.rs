@@ -37,10 +37,10 @@ struct NewBook<'a> {
 }
 
 #[derive(Deserialize, Serialize, Debug)]
-pub struct AuthorJson {
+pub struct Bill {
     pub id: i32,
-    pub name: String,
-    pub citizenship: String,
+    pub user: i32,
+    
 }
 
 #[derive(Debug, Deserialize, Queryable, Identifiable, Serialize)]
