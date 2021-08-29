@@ -1,19 +1,25 @@
-// use actix_web::{
-//     web::{block, Data, Form, Json, Path},
-//     Error, HttpResponse,
-// };
+use actix_web::HttpResponse;
+use actix_web::{
+    web::{block, Data, Form, Json, Path},
+    Error,
+};
 
-// use crate::{DataContext::DatabaseConnectionPool, entity::Book};
-// use crate::schema::books::{self,};
+use crate::{
+    database::{self, Book, Database},
+    helpers::respond_json,
+};
 
-// // / 搜索
-// pub async fn search(
-//     pool: Data<DatabaseConnectionPool>,
-//     param: &str,
-// ) -> Result<Vec<Book>, Error> {
-//     let conn = &pool.get()?;
-//     // let books =
-// }
+pub async fn create_book(database: Data<Database>, entity: Json) -> Result<Book, Error> {}
+
+// / 搜索
+pub async fn search(database: Data<Database>, param: &str) -> Result<Json<Vec<Book>>, Error> {
+    let ref conn = database.get()?;
+
+    let res = database::search(conn, param)?;
+
+    respond_json(res)
+    // let books =
+}
 // // / 广告
 // // / 每日更新
 // // / 排行榜

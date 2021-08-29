@@ -7,8 +7,11 @@ CREATE TABLE books (
     cover TEXT NOT NULL,
     description TEXT NOT NULL,
     tags TEXT[] NOT NULL,
+    -- Mon,Tue,Wed,Thu,Fri,Sat,Sun
+    day_of_week int not null,
     favorites_count int NOT NULL DEFAULT 0,
     completed BOOLEAN NOT NULL DEFAULT FALSE,
+    
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
@@ -47,14 +50,12 @@ CREATE TABLE episodes (
     id SERIAL PRIMARY KEY,
     book_id int NOT NULL REFERENCES books (id),
     name TEXT NOT NULL,
-    free BOOLEAN NOT NULL DEFAULT FALSE,
+    price int NOT NULL DEFAULT 0,
     comics TEXT[] NOT NULL
 );
 
 CREATE INDEX episode_book_id_idx ON episodes (book_id);
-
 SELECT diesel_manage_updated_at('episodes');
-
 
 CREATE TABLE episode_history (
     user_id int NOT NULL REFERENCES users (id),
