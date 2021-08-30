@@ -4,12 +4,12 @@ use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 use crate::{
-    jwt::{create_jwt, hash, Claims},
     errors::Error,
+    jwt::{create_jwt, hash, Claims},
     schema::users,
 };
 
-use super::{Connection, Database};
+use super::Connection;
 
 #[derive(Debug, Deserialize, Queryable, Identifiable, Serialize)]
 pub struct User {

@@ -1,8 +1,7 @@
-use std::ops::Add;
-
 use chrono::{DateTime, Duration, Utc};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
+use validator::Validate;
 
 use crate::{
     constants::DATE_FORMAT,
@@ -29,6 +28,7 @@ pub struct Book {
     pub day_of_week: i32,
     /// 喜爱数量
     pub favorites_count: i32,
+    pub completed: bool,
     /// 创建时间
     pub created_at: DateTime<Utc>,
     /// 更新时间
@@ -46,6 +46,19 @@ pub struct NewBook<'a> {
     pub day_of_week: &'a i32,
 }
 
+#[derive(Debug, Deserialize, Serialize, Validate)]
+pub struct NewBookInput {
+    pub authors: String,
+    pub slug: String,
+    #[validate(length(min = 1))]
+    pub name: String,
+    #[validate(length(min = 1))]
+    pub description: String,
+    pub cover: String,
+    pub tags: Vec<String>,
+    pub day_of_week: i32,
+}
+
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Bill {
     pub id: i32,
@@ -60,6 +73,8 @@ pub struct Episode {
     pub book: i32,
     /// 姓名
     pub name: String,
+    /// 价格
+    pub price: i32,
     /// 漫画链接
     pub comics: Vec<String>,
 }
@@ -73,7 +88,7 @@ pub struct Episode {
 //         .map_err(|err| Error::DataBaseError(err.to_string()))
 // }
 
-pub fn favorites(conn: &Connection, id: i32) -> Result<Vec<Book>, Error> {
+pub fn favorites(conn: &mut Connection, id: i32) -> Result<Vec<Book>, Error> {
     use crate::schema::{
         books::{self, dsl::*},
         favorite_books::{self, dsl::*},
@@ -93,20 +108,20 @@ pub fn episodes(conn: &mut Connection, id: i32) -> Result<Vec<Episode>, Error> {
 }
 
 pub fn search(conn: &mut Connection, tag: &str) -> Result<Vec<Book>, Error> {
-    use crate::schema::books::{self, dsl::*};
+    use crate::schema::books::dsl::*;
 
     let res = books
-        .filter(books::name.contains(tag))
-        .or(books::tags.contains(tag))
+        .filter(name.like(tag))
+        // .or(books::tags.contains(tag))
         .get_results(conn)?;
     Ok(res)
 }
 
-pub async fn day_of_week(conn: &mut Connection, dow: i32) {
-    use crate::schema::books::{self, dsl::*};
+pub async fn day_of_week(conn: &mut Connection, dow: i32) -> Result<Vec<Book>, Error> {
+    use crate::schema::books::dsl::*;
 
     let res: Vec<Book> = books
-        .filter(books::day_of_week.eq(dow))
+        .filter(day_of_week.eq(dow))
         .order_by(updated_at.desc())
         .get_results(conn)?;
     Ok(res)
