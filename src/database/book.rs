@@ -1,3 +1,4 @@
+use actix_web::web::Path;
 use chrono::{DateTime, Duration, Utc};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -101,17 +102,17 @@ pub fn favorites(conn: &mut Connection, id: i32) -> Result<Vec<Book>, Error> {
     Ok(list)
 }
 
-pub fn episodes(conn: &mut Connection, id: i32) -> Result<Vec<Episode>, Error> {
+pub fn episodes(conn: &mut Connection, id: &i32) -> Result<Vec<Episode>, Error> {
     use crate::schema::episodes::dsl::*;
-    let eps = episodes.filter(book_id.eq(id)).get_results(conn)?;
+    let eps = episodes.filter(book_id.eq(&id)).get_results(conn)?;
     Ok(eps)
 }
 
-pub fn search(conn: &mut Connection, tag: &str) -> Result<Vec<Book>, Error> {
+pub async fn search(conn: &mut Connection, tag: &str) -> Result<Vec<Book>, Error> {
     use crate::schema::books::dsl::*;
 
     let res = books
-        .filter(name.like(tag))
+        .filter(name.like(&tag))
         // .or(books::tags.contains(tag))
         .get_results(conn)?;
     Ok(res)
