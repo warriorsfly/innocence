@@ -1,9 +1,6 @@
-use crate::{
-    config::CONFIG,
-    routes::routes,
-    database::{add_database},
-};
+use crate::{config::CONFIG, database::add_database, routes::routes};
 
+use actix_cors::Cors;
 use actix_web::{middleware::Logger, App, HttpServer};
 
 pub(crate) async fn serv() -> std::io::Result<()> {
@@ -11,7 +8,7 @@ pub(crate) async fn serv() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             // 添加跨域
-            // .wrap(Cors::permissive())
+            .wrap(Cors::permissive())
             // 添加日志
             .wrap(Logger::default())
             // 连接数据库
