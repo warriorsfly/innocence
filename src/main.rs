@@ -13,7 +13,6 @@ mod errors;
 mod handlers;
 mod helpers;
 mod jwt;
-mod model;
 mod routes;
 mod schema;
 mod server;

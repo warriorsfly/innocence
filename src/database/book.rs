@@ -1,84 +1,8 @@
-use actix_web::web::Path;
-use chrono::{DateTime, Duration, Utc};
 use diesel::prelude::*;
-use serde::{Deserialize, Serialize};
-use validator::Validate;
 
-use crate::{
-    constants::DATE_FORMAT,
-    errors::Error,
-    schema::{books, episodes},
-};
+use crate::errors::Error;
 
-use super::Connection;
-
-#[derive(Deserialize, Serialize, Debug, Queryable, Selectable)]
-pub struct Book {
-    /// ID
-    pub id: i32,
-    pub authors: Vec<String>,
-    pub slug: String,
-    /// 名称
-    pub name: String,
-    /// 封面图片
-    pub cover: String,
-    /// 描述
-    pub description: String,
-    /// 标签
-    pub tags: Vec<String>,
-    pub day_of_week: i32,
-    /// 喜爱数量
-    pub favorites_count: i32,
-    pub completed: bool,
-    /// 创建时间
-    pub created_at: DateTime<Utc>,
-    /// 更新时间
-    pub updated_at: DateTime<Utc>,
-}
-#[derive(Debug, Insertable)]
-#[table_name = "books"]
-pub struct NewBook<'a> {
-    pub authors: &'a Vec<String>,
-    pub slug: &'a str,
-    pub name: &'a str,
-    pub description: &'a str,
-    pub cover: &'a str,
-    pub tags: &'a Vec<String>,
-    pub day_of_week: &'a i32,
-}
-
-#[derive(Debug, Deserialize, Serialize, Validate)]
-pub struct NewBookInput {
-    pub authors: String,
-    pub slug: String,
-    #[validate(length(min = 1))]
-    pub name: String,
-    #[validate(length(min = 1))]
-    pub description: String,
-    pub cover: String,
-    pub tags: Vec<String>,
-    pub day_of_week: i32,
-}
-
-#[derive(Deserialize, Serialize, Debug)]
-pub struct Bill {
-    pub id: i32,
-    pub user: i32,
-}
-
-#[derive(Debug, Deserialize, Queryable, Identifiable, Serialize)]
-pub struct Episode {
-    /// 章节ID
-    pub id: i32,
-    /// 所属书籍
-    pub book: i32,
-    /// 姓名
-    pub name: String,
-    /// 价格
-    pub price: i32,
-    /// 漫画链接
-    pub comics: Vec<String>,
-}
+use super::{Book, Connection, Episode};
 
 // pub fn create_book<'a>(conn: &'a mut Connection, entity: &'a NewBook) -> Result<Book, Error> {
 //     use crate::schema::books::{self, dsl::*};
@@ -89,22 +13,22 @@ pub struct Episode {
 //         .map_err(|err| Error::DataBaseError(err.to_string()))
 // }
 
-pub fn favorites(conn: &mut Connection, id: i32) -> Result<Vec<Book>, Error> {
+pub fn get_favorite_books(conn: &mut Connection, entity_id: i32) -> Result<Vec<Book>, Error> {
     use crate::schema::{
         books::{self, dsl::*},
         favorite_books::{self, dsl::*},
     };
     let list = favorite_books
-        .filter(favorite_books::user_id.eq(id))
+        .filter(favorite_books::user_id.eq(entity_id))
         .inner_join(books.on(favorite_books::book_id.eq(books::id)))
         .select(books::all_columns)
         .get_results(conn)?;
     Ok(list)
 }
 
-pub fn episodes(conn: &mut Connection, id: &i32) -> Result<Vec<Episode>, Error> {
+pub fn get_book_episodes(conn: &mut Connection, entity_id: i32) -> Result<Vec<Episode>, Error> {
     use crate::schema::episodes::dsl::*;
-    let eps = episodes.filter(book_id.eq(&id)).get_results(conn)?;
+    let eps = episodes.filter(book_id.eq(&entity_id)).get_results(conn)?;
     Ok(eps)
 }
 

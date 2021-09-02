@@ -7,10 +7,11 @@ use diesel::{
 
 mod billing;
 mod book;
+mod model;
 mod pagination;
 mod user;
 
-pub use self::{book::*, pagination::*, user::*};
+pub use self::{book::*, model::*, pagination::*, user::*};
 
 pub type Database = Pool<ConnectionManager<PgConnection>>;
 pub type Connection = PooledConnection<ConnectionManager<PgConnection>>;
