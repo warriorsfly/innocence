@@ -1,7 +1,7 @@
 use actix_web::web::{Data, Json, Path};
 
 use crate::{
-    database::{self, Book, Database},
+    database::{self, Book, Database, Episode},
     errors::Error,
     helpers::respond_json,
 };
@@ -42,7 +42,18 @@ pub async fn day_of_week(
     let res = database::day_of_week(conn, day).await?;
 
     respond_json(res)
-    // let books =
+}
+
+pub async fn get_book_episodes(
+    database: Data<Database>,
+    entity: Path<String>,
+) -> Result<Json<Vec<Episode>>, Error> {
+    let book_id = entity
+        .parse::<i32>()
+        .map_err(|e| Error::BadRequest(e.to_string()))?;
+    let ref mut conn = database.get()?;
+    let res = database::get_book_episodes(conn, book_id)?;
+    respond_json(res)
 }
 // // / 广告
 // // / 每日更新

@@ -11,7 +11,7 @@ mod model;
 mod pagination;
 mod user;
 
-pub use self::{book::*, model::*, pagination::*, user::*};
+pub(crate) use self::{book::*, model::*, user::*};
 
 pub type Database = Pool<ConnectionManager<PgConnection>>;
 pub type Connection = PooledConnection<ConnectionManager<PgConnection>>;

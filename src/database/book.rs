@@ -28,7 +28,7 @@ pub fn get_favorite_books(conn: &mut Connection, entity_id: i32) -> Result<Vec<B
 
 pub fn get_book_episodes(conn: &mut Connection, entity_id: i32) -> Result<Vec<Episode>, Error> {
     use crate::schema::episodes::dsl::*;
-    let eps = episodes.filter(book_id.eq(&entity_id)).get_results(conn)?;
+    let eps = episodes.filter(book_id.eq(entity_id)).get_results(conn)?;
     Ok(eps)
 }
 
@@ -37,7 +37,7 @@ pub async fn search(conn: &mut Connection, tag: &str) -> Result<Vec<Book>, Error
 
     let res = books
         .filter(name.like(&tag))
-        // .or(books::tags.contains(tag))
+        // .f(tags.contains(tag))
         .get_results(conn)?;
     Ok(res)
 }
