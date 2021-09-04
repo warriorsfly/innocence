@@ -21,5 +21,5 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
                     .route("/{weekday}/list", web::get().to(book::day_of_week)),
             ),
     )
-    .service(Files::new("/assets", "assets").prefer_utf8(true));
+    .service(Files::new("/static", "static").prefer_utf8(true));
 }
