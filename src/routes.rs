@@ -1,3 +1,4 @@
+use actix_files::Files;
 use actix_web::web;
 
 use crate::handlers::{book, user};
@@ -18,7 +19,7 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
                     )
                     .route("/search/{param}", web::get().to(book::search))
                     .route("/{weekday}/list", web::get().to(book::day_of_week)),
-                // .route("/weekday/{weekday}", web::get().to(book::day_of_week)),
             ),
-    );
+    )
+    .service(Files::new("/assets", "assets").prefer_utf8(true));
 }

@@ -10,7 +10,6 @@ edition = "2018"
 actix-cors ="0.6.0-beta.2"
 actix-files ="0.6.0-beta.6"
 actix-web = "4.0.0-beta.8"
-# actix-web-actors = "4.0.0-beta.6"
 
 argon2rs = "0.2"
 chrono ={version = "0.4",features = ["serde"]}
