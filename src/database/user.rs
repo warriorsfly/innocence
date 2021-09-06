@@ -2,7 +2,7 @@ use diesel::prelude::*;
 
 use crate::{
     errors::Error,
-    jwt::{create_jwt, hash, Claims},
+    auth::{create_jwt, hash, Claims},
 };
 
 use super::{Connection, NewUser, User, UserLoginOutput};

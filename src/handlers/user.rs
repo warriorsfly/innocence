@@ -1,7 +1,7 @@
 use actix_web::web::{Data, Json};
 
 use crate::{
-    jwt::hash,
+    auth::hash,
     database::{self, Database, NewUser, NewUserInput, User, UserLoginInput, UserLoginOutput},
     errors::Error,
     helpers::respond_json,

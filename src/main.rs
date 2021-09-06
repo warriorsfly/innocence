@@ -5,6 +5,7 @@ extern crate diesel;
 #[macro_use]
 extern crate lazy_static;
 
+mod auth;
 mod awc;
 mod config;
 mod constants;
@@ -12,7 +13,7 @@ mod database;
 mod errors;
 mod handlers;
 mod helpers;
-mod jwt;
+mod middleware;
 mod routes;
 mod schema;
 mod server;
