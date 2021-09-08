@@ -12,8 +12,6 @@ actix-files ="0.6.0-beta.6"
 actix-web = "4.0.0-beta.8"
 
 argon2rs = "0.2"
-# actix-casbin = "0.4"
-# actix-casbin-auth = "0.4"
 chrono ={version = "0.4",features = ["serde"]}
 
 diesel = {git = "https://github.com/diesel-rs/diesel", features = ["chrono", "postgres","r2d2", "serde_json"]}
