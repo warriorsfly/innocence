@@ -12,10 +12,10 @@ where
 {
     Ok(Json(data))
 }
-///
-pub fn respond_ok() -> Result<HttpResponse<Body>, Error> {
-    Ok(HttpResponse::ok())
-}
+// ///
+// pub fn respond_ok() -> Result<HttpResponse<Body>, Error> {
+//     Ok(HttpResponse::Ok().)
+// }
 
 #[cfg(test)]
 mod tests {
@@ -36,9 +36,4 @@ mod tests {
         assert_eq!(result.unwrap().into_inner(), response);
     }
 
-    #[test]
-    fn it_responds_ok() {
-        let result = respond_ok();
-        assert!(result.is_ok());
-    }
 }
