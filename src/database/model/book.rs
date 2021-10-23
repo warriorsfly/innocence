@@ -3,9 +3,7 @@ use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::{
-    schema::{books, episodes},
-};
+use crate::schema::{books, episodes};
 
 #[derive(Deserialize, Serialize, Debug, Queryable, Selectable)]
 pub struct Book {

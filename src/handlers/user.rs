@@ -1,10 +1,10 @@
 use actix_web::web::{Data, Json};
 
 use crate::{
-    auth::hash,
     database::{self, Database, NewUser, NewUserInput, User, UserLoginInput, UserLoginOutput},
     errors::Error,
     helpers::respond_json,
+    plugins::hash,
     validate::validate,
 };
 

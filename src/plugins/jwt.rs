@@ -1,7 +1,9 @@
 use crate::config::CONFIG;
 use crate::errors::Error;
-use argon2rs::argon2i_simple;
+use actix_web::FromRequest;
+
 use chrono::{Duration, Utc};
+use futures::future::{err, ok, Ready};
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use serde::{Deserialize, Serialize};
 
@@ -16,6 +18,32 @@ impl Claims {
         Self {
             id,
             exp: (Utc::now() + Duration::hours(CONFIG.jwt_expiration)).timestamp(),
+        }
+    }
+}
+
+impl FromRequest for Claims {
+    type Error = Error;
+    type Future = Ready<Result<Self, Self::Error>>;
+
+    fn from_request(
+        _req: &actix_web::HttpRequest,
+        _payload: &mut actix_web::dev::Payload,
+    ) -> Self::Future {
+        let _auth = _req.headers().get("Authorization");
+
+        match _auth {
+            Some(_) => {
+                let _split: Vec<&str> = _auth.unwrap().to_str().unwrap().split("Bearer").collect();
+                let token = _split[1].trim();
+                match decode_jwt(token) {
+                    Ok(claims) => ok(claims),
+                    Err(e) => err(e),
+                }
+            }
+            None => err(Error::Unauthorized(
+                "no authorization in headers".to_string(),
+            )),
         }
     }
 }
@@ -35,37 +63,9 @@ pub fn decode_jwt(token: &str) -> Result<Claims, Error> {
         .map_err(|e| Error::InternalServerError(e.to_string()))
 }
 
-/// Encrypt a password
-///
-/// Uses the argon2i algorithm.
-/// salt is environment-condigured.
-pub fn hash(password: &str) -> String {
-    argon2i_simple(&password, &CONFIG.salt)
-        .iter()
-        .map(|b| format!("{:02x}", b))
-        .collect()
-}
-
 #[cfg(test)]
 pub mod tests {
     use super::*;
-
-    #[test]
-    fn it_hashes_a_password() {
-        let password = "password";
-        let hashed = hash(password);
-        assert_ne!(password, hashed);
-    }
-
-    #[test]
-    fn it_matches_2_hashed_passwords() {
-        let password = "password";
-        let hashed = hash(password);
-        let hashed_again = hash(password);
-        println!("{}", hashed);
-        println!("{}", hashed_again);
-        assert_eq!(hashed, hashed_again);
-    }
 
     #[test]
     fn it_creates_a_jwt() {
