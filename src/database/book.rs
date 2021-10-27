@@ -26,9 +26,9 @@ pub fn get_favorite_books(conn: &mut Connection, entity_id: i32) -> Result<Vec<B
     Ok(list)
 }
 
-pub fn get_book_episodes(conn: &mut Connection, entity_id: i32) -> Result<Vec<Episode>, Error> {
+pub fn get_book_episodes(conn: &mut Connection, book: i32) -> Result<Vec<Episode>, Error> {
     use crate::schema::episodes::dsl::*;
-    let eps = episodes.filter(book_id.eq(entity_id)).get_results(conn)?;
+    let eps = episodes.filter(book_id.eq(book)).get_results(conn)?;
     Ok(eps)
 }
 
@@ -42,7 +42,7 @@ pub async fn search(conn: &mut Connection, tag: &str) -> Result<Vec<Book>, Error
     Ok(res)
 }
 
-pub async fn day_of_week(conn: &mut Connection, dow: i32) -> Result<Vec<Book>, Error> {
+pub async fn books_of_weekday(conn: &mut Connection, dow: i32) -> Result<Vec<Book>, Error> {
     use crate::schema::books::dsl::*;
 
     let res: Vec<Book> = books

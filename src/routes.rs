@@ -18,7 +18,7 @@ pub fn routes(cfg: &mut web::ServiceConfig) {
                         web::get().to(book::get_book_episodes),
                     )
                     .route("/search/{param}", web::get().to(book::search))
-                    .route("/{weekday}/list", web::get().to(book::day_of_week)),
+                    .route("/{weekday}/list", web::get().to(book::books_of_weekday)),
             ),
     )
     .service(Files::new("/static", "static").prefer_utf8(true));

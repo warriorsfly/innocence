@@ -4,6 +4,7 @@ use crate::{
     database::{self, Book, Database, Episode},
     errors::Error,
     helpers::respond_json,
+    plugins::Claims,
 };
 
 // pub async fn create_book(database: Data<Database>, entity: Json) -> Result<Book, Error> {}
@@ -18,11 +19,11 @@ pub async fn search(database: Data<Database>, tag: Path<String>) -> Result<Json<
     // let books =
 }
 
-pub async fn day_of_week(
+pub async fn books_of_weekday(
     database: Data<Database>,
     weekday: Path<String>,
 ) -> Result<Json<Vec<Book>>, Error> {
-    let day = match weekday.as_str() {
+    let day = match weekday.to_lowercase().as_str() {
         "mon" => 1,
         "tue" => 2,
         "wed" => 3,
@@ -33,18 +34,18 @@ pub async fn day_of_week(
         _ => -1,
     };
 
-    if day == -1 {
+    if day < 0 {
         return Err(Error::BadRequest("error week day request".to_string()));
     }
-
     let ref mut conn = database.get()?;
 
-    let res = database::day_of_week(conn, day).await?;
+    let res = database::books_of_weekday(conn, day).await?;
 
     respond_json(res)
 }
 
 pub async fn get_book_episodes(
+    claims: Option<Claims>,
     database: Data<Database>,
     entity: Path<String>,
 ) -> Result<Json<Vec<Episode>>, Error> {

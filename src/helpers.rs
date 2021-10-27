@@ -1,7 +1,4 @@
-use actix_web::{
-    body::Body,
-    web::{HttpResponse, Json},
-};
+use actix_web::web::Json;
 use serde::Serialize;
 
 use crate::errors::Error;
