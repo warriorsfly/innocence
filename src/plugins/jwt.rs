@@ -1,4 +1,5 @@
-use crate::config::CONFIG;
+use crate::constants::BEARER_PREFIX;
+use crate::{config::CONFIG, constants::AUTHORIZATION_PREFIX};
 use crate::errors::Error;
 use actix_web::FromRequest;
 
@@ -30,11 +31,11 @@ impl FromRequest for Claims {
         _req: &actix_web::HttpRequest,
         _payload: &mut actix_web::dev::Payload,
     ) -> Self::Future {
-        let _auth = _req.headers().get("Authorization");
+        let _auth = _req.headers().get(AUTHORIZATION_PREFIX);
 
         match _auth {
             Some(_) => {
-                let _split: Vec<&str> = _auth.unwrap().to_str().unwrap().split("Bearer").collect();
+                let _split: Vec<&str> = _auth.unwrap().to_str().unwrap().split(BEARER_PREFIX).collect();
                 let token = _split[1].trim();
                 match decode_jwt(token) {
                     Ok(claims) => ok(claims),

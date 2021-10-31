@@ -5,7 +5,7 @@ use futures::{
 };
 use std::pin::Pin;
 
-use crate::{constants::MESSAGE_INVALID_TOKEN, errors, plugins::decode_jwt};
+use crate::{constants::{AUTHORIZATION_PREFIX, BEARER_PREFIX, MESSAGE_INVALID_TOKEN}, errors, plugins::decode_jwt};
 
 pub struct JwtAuth;
 
@@ -46,10 +46,10 @@ where
     }
 
     fn call(&self, req: ServiceRequest) -> Self::Future {
-        let _authorized = req.headers().get("Authorization");
+        let _authorized = req.headers().get(AUTHORIZATION_PREFIX);
 
         if let Some(_authorized) = _authorized {
-            let _split: Vec<&str> = _authorized.to_str().unwrap().split("Bearer").collect();
+            let _split: Vec<&str> = _authorized.to_str().unwrap().split(BEARER_PREFIX).collect();
             let token = _split[1].trim();
             match decode_jwt(token) {
                 Ok(_) => {
