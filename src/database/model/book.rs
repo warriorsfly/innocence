@@ -3,7 +3,7 @@ use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 use validator::Validate;
 
-use crate::schema::{books, episodes};
+use crate::schema::books;
 
 #[derive(Deserialize, Serialize, Debug, Queryable, Selectable)]
 pub struct Book {
@@ -59,16 +59,3 @@ pub struct Bill {
     pub user: i32,
 }
 
-#[derive(Debug, Deserialize, Queryable, Identifiable, Serialize)]
-pub struct Episode {
-    /// 章节ID
-    pub id: i32,
-    /// 所属书籍
-    pub book: i32,
-    /// 姓名
-    pub name: String,
-    /// 价格
-    pub price: i32,
-    /// 漫画链接
-    pub comics: Vec<String>,
-}

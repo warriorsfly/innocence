@@ -2,16 +2,16 @@ use diesel::prelude::*;
 
 use crate::errors::Error;
 
-use super::{Book, Connection, Episode};
+use super::{Book, Connection, Episode, EpisodeHistory, NewBook};
 
-// pub fn create_book<'a>(conn: &'a mut Connection, entity: &'a NewBook) -> Result<Book, Error> {
-//     use crate::schema::books::{self, dsl::*};
+pub fn create_book<'a>(conn: &'a mut Connection, entity: &'a NewBook) -> Result<Book, Error> {
+    use crate::schema::books::dsl::*;
 
-//     diesel::insert_into(books)
-//         .values(entity)
-//         .get_result(conn)
-//         .map_err(|err| Error::DataBaseError(err.to_string()))
-// }
+    diesel::insert_into(books)
+        .values(entity)
+        .get_result(conn)
+        .map_err(|err| Error::DataBaseError(err.to_string()))
+}
 
 pub fn get_favorite_books(conn: &mut Connection, entity_id: i32) -> Result<Vec<Book>, Error> {
     use crate::schema::{
@@ -26,9 +26,20 @@ pub fn get_favorite_books(conn: &mut Connection, entity_id: i32) -> Result<Vec<B
     Ok(list)
 }
 
-pub fn get_book_episodes(conn: &mut Connection, book: i32) -> Result<Vec<Episode>, Error> {
-    use crate::schema::episodes::dsl::*;
-    let eps = episodes.filter(book_id.eq(book)).get_results(conn)?;
+pub fn get_book_episodes(
+    conn: &mut Connection,
+    user: i32,
+    book: i32,
+) -> Result<Vec<Episode>, Error> {
+    use crate::schema::{episode_historys, episodes};
+
+    let eps = episodes::table
+        .filter(episodes::book_id.eq(book))
+        .get_results(conn)?;
+    let mine_eps: Vec<EpisodeHistory> = episode_historys::table
+        .filter(episode_historys::user_id.eq(user))
+        .filter(episode_historys::book_id.eq(book))
+        .get_results(conn)?;
     Ok(eps)
 }
 

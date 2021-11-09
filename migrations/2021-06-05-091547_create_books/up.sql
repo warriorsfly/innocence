@@ -51,13 +51,15 @@ CREATE TABLE episodes (
     book_id int NOT NULL REFERENCES books (id),
     name TEXT NOT NULL,
     price int NOT NULL DEFAULT 0,
-    comics TEXT[] NOT NULL
+    comics TEXT[] NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX episode_book_id_idx ON episodes (book_id);
 SELECT diesel_manage_updated_at('episodes');
 
-CREATE TABLE episode_history (
+CREATE TABLE episode_historys (
     user_id int NOT NULL REFERENCES users (id),
     book_id int NOT NULL REFERENCES books (id),
     episode_id int NOT NULL REFERENCES episodes (id),
@@ -66,5 +68,5 @@ CREATE TABLE episode_history (
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
-SELECT diesel_manage_updated_at('episode_history');
+SELECT diesel_manage_updated_at('episode_historys');
 

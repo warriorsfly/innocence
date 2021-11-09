@@ -16,7 +16,7 @@ table! {
 }
 
 table! {
-    episode_history (user_id, book_id, episode_id) {
+    episode_historys (user_id, book_id, episode_id) {
         user_id -> Int4,
         book_id -> Int4,
         episode_id -> Int4,
@@ -32,6 +32,8 @@ table! {
         name -> Text,
         price -> Int4,
         comics -> Array<Text>,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
     }
 }
 
@@ -66,9 +68,9 @@ table! {
     }
 }
 
-joinable!(episode_history -> books (book_id));
-joinable!(episode_history -> episodes (episode_id));
-joinable!(episode_history -> users (user_id));
+joinable!(episode_historys -> books (book_id));
+joinable!(episode_historys -> episodes (episode_id));
+joinable!(episode_historys -> users (user_id));
 joinable!(episodes -> books (book_id));
 joinable!(favorite_books -> books (book_id));
 joinable!(favorite_books -> users (user_id));
@@ -77,7 +79,7 @@ joinable!(reading_historys -> users (user_id));
 
 allow_tables_to_appear_in_same_query!(
     books,
-    episode_history,
+    episode_historys,
     episodes,
     favorite_books,
     reading_historys,

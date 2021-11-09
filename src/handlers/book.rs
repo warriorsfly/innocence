@@ -52,8 +52,12 @@ pub async fn get_book_episodes(
     let book_id = entity
         .parse::<i32>()
         .map_err(|e| Error::BadRequest(e.to_string()))?;
+    let mut user = 0;
+    if let Some(claims) = claims{
+        user = claims.id;
+    }
     let ref mut conn = database.get()?;
-    let res = database::get_book_episodes(conn, book_id)?;
+    let res = database::get_book_episodes(conn, user, book_id)?;
     respond_json(res)
 }
 // // / 广告
