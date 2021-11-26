@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: innocence
+  labels:
+    name: innocence
+spec:
+  containers:
+  - name: innocence
+    image: warriorsfly/innocence
+    resources:
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    ports:
+      - containerPort: 3000
