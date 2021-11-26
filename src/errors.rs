@@ -16,6 +16,7 @@ pub enum Error {
     BadRequest(String),
     InternalServerError(String),
     NotFound(String),
+    PaymentRequired(String),
     DataBaseError(String),
     Unauthorized(String),
     #[display(fmt = "")]
@@ -43,6 +44,7 @@ impl ResponseError for Error {
             Error::BadRequest(_) => StatusCode::BAD_REQUEST,
             Error::NotFound(_) => StatusCode::NOT_FOUND,
             Error::Unauthorized(_) => StatusCode::UNAUTHORIZED,
+            Error::PaymentRequired(_) => StatusCode::PAYMENT_REQUIRED,
             _ => StatusCode::INTERNAL_SERVER_ERROR,
         }
     }
