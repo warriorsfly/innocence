@@ -37,7 +37,7 @@ pub struct UserChange {
     pub avatar: Option<String>,
 }
 
-#[derive(Debug, Deserialize, Serialize, Validate)]
+#[derive(Debug, Deserialize, Validate)]
 pub struct NewUserInput {
     pub username: String,
     #[validate(email(message = "email must be a valid email"))]
@@ -48,7 +48,7 @@ pub struct NewUserInput {
     pub avatar: Option<String>,
 }
 
-#[derive(Debug, Deserialize, Serialize, Validate)]
+#[derive(Debug, Deserialize, Validate)]
 pub struct UpdateUserInput {
     pub username: Option<String>,
     pub email: Option<String>,
@@ -57,13 +57,13 @@ pub struct UpdateUserInput {
     pub avatar: Option<String>,
 }
 
-#[derive(Debug, Deserialize, Serialize, Validate)]
+#[derive(Debug, Deserialize, Validate)]
 pub struct UserLoginInput {
     pub name: String,
     pub password: String,
 }
 
-#[derive(Debug, Deserialize, Serialize, Validate)]
+#[derive(Debug, Serialize, Validate)]
 pub struct UserLoginOutput {
     pub token: String,
     pub account: User,
