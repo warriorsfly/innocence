@@ -1,4 +1,4 @@
-use actix_web::web::{Data, Json, Path};
+use actix_web::web::{block, Data, Json, Path};
 
 use crate::{
     database::{self, Book, Database, Episode},
@@ -7,20 +7,16 @@ use crate::{
     plugins::Claims,
 };
 
-// pub async fn create_book(database: Data<Database>, entity: Json) -> Result<Book, Error> {}
+// pub async fn create_book(pool: Data<Database>, entity: Json) -> Result<Book, Error> {}
 
 // / 搜索
-pub async fn search(database: Data<Database>, tag: Path<String>) -> Result<Json<Vec<Book>>, Error> {
-    let ref mut conn = database.get()?;
-
-    let res = database::search(conn, &tag).await?;
-
+pub async fn search(pool: Data<Database>, tag: Path<String>) -> Result<Json<Vec<Book>>, Error> {
+    let res = block(move || database::search(&pool, &tag)).await??;
     respond_json(res)
-    // let books =
 }
 
 pub async fn books_of_weekday(
-    database: Data<Database>,
+    pool: Data<Database>,
     weekday: Path<String>,
 ) -> Result<Json<Vec<Book>>, Error> {
     let day = match weekday.to_lowercase().as_str() {
@@ -37,27 +33,26 @@ pub async fn books_of_weekday(
     if day < 0 {
         return Err(Error::BadRequest("error week day request".to_string()));
     }
-    let ref mut conn = database.get()?;
 
-    let res = database::books_of_weekday(conn, day).await?;
+    let res = block(move || database::books_of_weekday(&pool, day)).await??;
 
     respond_json(res)
 }
 
 pub async fn get_book_episodes(
     claims: Option<Claims>,
-    database: Data<Database>,
+    pool: Data<Database>,
     entity: Path<String>,
 ) -> Result<Json<Vec<Episode>>, Error> {
     let book_id = entity
         .parse::<i32>()
         .map_err(|e| Error::BadRequest(e.to_string()))?;
     let mut user = 0;
-    if let Some(claims) = claims{
+    if let Some(claims) = claims {
         user = claims.id;
     }
-    let ref mut conn = database.get()?;
-    let res = database::get_book_episodes(conn, user, book_id)?;
+
+    let res = block(move || database::get_book_episodes(&pool, user, book_id)).await??;
     respond_json(res)
 }
 // // / 广告

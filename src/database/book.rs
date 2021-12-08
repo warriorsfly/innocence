@@ -2,7 +2,7 @@ use diesel::prelude::*;
 
 use crate::errors::Error;
 
-use super::{Book, Connection, Episode, EpisodeHistory, NewBook};
+use super::{Book, Connection, Database, Episode, EpisodeHistory, NewBook};
 
 pub fn create_book<'a>(conn: &'a mut Connection, entity: &'a NewBook) -> Result<Book, Error> {
     use crate::schema::books::dsl::*;
@@ -13,11 +13,13 @@ pub fn create_book<'a>(conn: &'a mut Connection, entity: &'a NewBook) -> Result<
         .map_err(|err| Error::DataBaseError(err.to_string()))
 }
 
-pub fn get_favorite_books(conn: &mut Connection, entity_id: i32) -> Result<Vec<Book>, Error> {
+pub fn get_favorite_books(pool: &Database, entity_id: i32) -> Result<Vec<Book>, Error> {
     use crate::schema::{
         books::{self, dsl::*},
         favorite_books::{self, dsl::*},
     };
+
+    let ref mut conn = pool.get()?;
     let list = favorite_books
         .filter(favorite_books::user_id.eq(entity_id))
         .inner_join(books.on(favorite_books::book_id.eq(books::id)))
@@ -27,12 +29,12 @@ pub fn get_favorite_books(conn: &mut Connection, entity_id: i32) -> Result<Vec<B
 }
 
 pub fn get_book_episodes(
-    conn: &mut Connection,
+    pool: &Database,
     user: i32,
     book: i32,
 ) -> Result<Vec<Episode>, Error> {
     use crate::schema::{episode_historys, episodes};
-
+let ref mut conn = pool.get()?;
     let eps = episodes::table
         .filter(episodes::book_id.eq(book))
         .get_results(conn)?;
@@ -43,9 +45,9 @@ pub fn get_book_episodes(
     Ok(eps)
 }
 
-pub async fn search(conn: &mut Connection, tag: &str) -> Result<Vec<Book>, Error> {
+pub fn search(pool: &Database, tag: &str) -> Result<Vec<Book>, Error> {
     use crate::schema::books::dsl::*;
-
+    let ref mut conn = pool.get()?;
     let res = books
         .filter(name.like(&tag))
         // .f(tags.contains(tag))
@@ -53,9 +55,9 @@ pub async fn search(conn: &mut Connection, tag: &str) -> Result<Vec<Book>, Error
     Ok(res)
 }
 
-pub async fn books_of_weekday(conn: &mut Connection, dow: i32) -> Result<Vec<Book>, Error> {
+pub fn books_of_weekday(pool: &Database, dow: i32) -> Result<Vec<Book>, Error> {
     use crate::schema::books::dsl::*;
-
+    let ref mut conn = pool.get()?;
     let res: Vec<Book> = books
         .filter(day_of_week.eq(dow))
         .order_by(updated_at.desc())

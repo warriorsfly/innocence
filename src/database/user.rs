@@ -5,11 +5,11 @@ use crate::{
     plugins::{create_jwt, hash, Claims},
 };
 
-use super::{Connection, NewUser, User, UserLoginOutput};
+use super::{Connection, Database, NewUser, User, UserLoginOutput};
 
-pub(crate) fn signup<'a>(conn: &'a mut Connection, entity: &'a NewUser) -> Result<User, Error> {
+pub(crate) fn signup<'a>(pool: &'a Database, entity: &'a NewUser) -> Result<User, Error> {
     use crate::schema::users::dsl::*;
-
+    let ref mut conn = pool.get()?;
     diesel::insert_into(users)
         .values(entity)
         .get_result::<User>(conn)
@@ -17,13 +17,13 @@ pub(crate) fn signup<'a>(conn: &'a mut Connection, entity: &'a NewUser) -> Resul
 }
 
 pub(crate) fn login<'a>(
-    conn: &'a mut Connection,
+    pool: &'a Database,
     name: &'a str,
     psw: &'a str,
 ) -> Result<UserLoginOutput, Error> {
     use crate::schema::users::dsl::*;
     let hashed = hash(psw);
-
+    let ref mut conn = pool.get()?;
     let user: User = users
         .filter(username.eq(name))
         .filter(password.eq(&hashed))
