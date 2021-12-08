@@ -1,5 +1,5 @@
 use actix_web::{
-    error::ResponseError,
+    error::{ResponseError, BlockingError},
     http::{header, StatusCode},
     HttpResponse, HttpResponseBuilder,
 };
@@ -84,5 +84,12 @@ impl From<DBError> for Error {
 impl From<PoolError> for Error {
     fn from(error: PoolError) -> Error {
         Error::DataBaseError(error.to_string())
+    }
+}
+
+/// Convert BlockingError to ServiceErrors
+impl From<BlockingError> for Error {
+    fn from(error: BlockingError) -> Error {
+        Error::InternalServerError(error.to_string())
     }
 }
