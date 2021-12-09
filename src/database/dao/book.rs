@@ -1,12 +1,12 @@
 use diesel::prelude::*;
 
-use crate::errors::Error;
+use crate::{
+    database::{Book, Database, Episode, EpisodeHistory, NewBook},
+    errors::Error};
 
-use super::{Book, Connection, Database, Episode, EpisodeHistory, NewBook};
-
-pub fn create_book<'a>(conn: &'a mut Connection, entity: &'a NewBook) -> Result<Book, Error> {
+pub fn create_book<'a>(pool: &'a Database, entity: &'a NewBook) -> Result<Book, Error> {
     use crate::schema::books::dsl::*;
-
+    let ref mut conn = pool.get()?;
     diesel::insert_into(books)
         .values(entity)
         .get_result(conn)

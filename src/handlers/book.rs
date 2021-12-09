@@ -1,10 +1,10 @@
 use actix_web::web::{block, Data, Json, Path};
 
 use crate::{
-    database::{self, Book, Database, Episode},
+    database::{self, Database},
     errors::Error,
     helpers::respond_json,
-    plugins::Claims,
+    utils::Claims,
 };
 
 // pub async fn create_book(pool: Data<Database>, entity: Json) -> Result<Book, Error> {}

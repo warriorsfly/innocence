@@ -12,7 +12,7 @@ mod errors;
 mod handlers;
 mod helpers;
 mod middleware;
-mod plugins;
+mod utils;
 mod routes;
 mod schema;
 mod server;

@@ -5,13 +5,11 @@ use diesel::{
     PgConnection,
 };
 
-mod billing;
-mod book;
-mod model;
+mod dao;
+mod entity;
 mod pagination;
-mod user;
 
-pub(crate) use self::{book::*, model::*, user::*};
+pub(crate) use self::{dao::*, entity::*};
 
 pub type Database = Pool<ConnectionManager<PgConnection>>;
 pub type Connection = PooledConnection<ConnectionManager<PgConnection>>;

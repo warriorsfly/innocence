@@ -5,7 +5,7 @@ use futures::{
 };
 use std::pin::Pin;
 
-use crate::{constants::{AUTHORIZATION_PREFIX, BEARER_PREFIX, MESSAGE_INVALID_TOKEN}, errors, plugins::decode_jwt};
+use crate::{constants::{AUTHORIZATION_PREFIX, BEARER_PREFIX, MESSAGE_INVALID_TOKEN}, errors, utils::decode_jwt};
 
 pub struct JwtAuth;
 

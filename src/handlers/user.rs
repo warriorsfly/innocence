@@ -4,7 +4,7 @@ use crate::{
     database::{self, Database, NewUser, NewUserInput, User, UserLoginInput, UserLoginOutput},
     errors::Error,
     helpers::respond_json,
-    plugins::hash,
+    utils::hash,
     validate::validate,
 };
 

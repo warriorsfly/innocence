@@ -1,11 +1,10 @@
 use diesel::prelude::*;
 
 use crate::{
+    database::{Database, NewUser, User, UserLoginOutput},
     errors::Error,
-    plugins::{create_jwt, hash, Claims},
+    utils::{create_jwt, hash, Claims},
 };
-
-use super::{Connection, Database, NewUser, User, UserLoginOutput};
 
 pub(crate) fn signup<'a>(pool: &'a Database, entity: &'a NewUser) -> Result<User, Error> {
     use crate::schema::users::dsl::*;
