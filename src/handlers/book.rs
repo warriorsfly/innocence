@@ -1,7 +1,7 @@
 use actix_web::web::{block, Data, Json, Path};
 
 use crate::{
-    database::{self, Database},
+    database::{self, Database, Book, Episode},
     errors::Error,
     helpers::respond_json,
     utils::Claims,
