@@ -7,7 +7,7 @@ use diesel::{
 
 mod dao;
 mod entity;
-mod pagination;
+// mod pagination;
 
 pub(crate) use self::{dao::*, entity::*};
 

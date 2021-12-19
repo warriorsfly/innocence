@@ -37,9 +37,9 @@ impl<T> Paginated<T> {
         }
     }
 
-    pub fn load_and_count_pages<U>(self, conn: &mut PgConnection) -> QueryResult<(Vec<U>, i64)>
+    pub fn load_and_count_pages<'query,U>(self, conn: &mut PgConnection) -> QueryResult<(Vec<U>, i64)>
     where
-        Self: LoadQuery<PgConnection, (U, i64)>,
+        Self: LoadQuery<'query,PgConnection, (U, i64)>,
     {
         let page_size = self.page_size;
         let results = self.load::<(U, i64)>(conn)?;
