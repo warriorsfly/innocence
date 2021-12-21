@@ -55,11 +55,11 @@ pub fn search(pool: &Database, tag: &str) -> Result<Vec<Book>, Error> {
     Ok(res)
 }
 
-pub fn books_of_weekday(pool: &Database, dow: i32) -> Result<Vec<Book>, Error> {
+pub fn books_of_weekday(pool: &Database, wd: &str) -> Result<Vec<Book>, Error> {
     use crate::schema::books::dsl::*;
     let ref mut conn = pool.get()?;
     let res: Vec<Book> = books
-        .filter(day_of_week.eq(dow))
+        .filter(weekday.eq(wd))
         .order_by(updated_at.desc())
         .get_results(conn)?;
     Ok(res)

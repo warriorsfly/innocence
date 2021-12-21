@@ -19,22 +19,9 @@ pub async fn books_of_weekday(
     pool: Data<Database>,
     weekday: Path<String>,
 ) -> Result<Json<Vec<Book>>, Error> {
-    let day = match weekday.to_lowercase().as_str() {
-        "mon" => 1,
-        "tue" => 2,
-        "wed" => 3,
-        "thu" => 4,
-        "fri" => 5,
-        "sat" => 6,
-        "sun" => 7,
-        _ => -1,
-    };
+ 
 
-    if day < 0 {
-        return Err(Error::BadRequest("error week day request".to_string()));
-    }
-
-    let res = block(move || database::books_of_weekday(&pool, day)).await??;
+    let res = block(move || database::books_of_weekday(&pool, &weekday)).await??;
 
     respond_json(res)
 }

@@ -8,7 +8,7 @@ CREATE TABLE books (
     description TEXT NOT NULL,
     tags TEXT[] NOT NULL,
     -- Mon,Tue,Wed,Thu,Fri,Sat,Sun
-    day_of_week int not null,
+    weekday TEXT NOT NULL,
     favorites_count int NOT NULL DEFAULT 0,
     completed BOOLEAN NOT NULL DEFAULT FALSE,
     

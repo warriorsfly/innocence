@@ -19,7 +19,7 @@ pub struct Book {
     pub description: String,
     /// 标签
     pub tags: Vec<String>,
-    pub day_of_week: i32,
+    pub weekday: String,
     /// 喜爱数量
     pub favorites_count: i32,
     pub completed: bool,
@@ -37,7 +37,7 @@ pub struct NewBook<'a> {
     pub description: &'a str,
     pub cover: &'a str,
     pub tags: &'a Vec<String>,
-    pub day_of_week: &'a i32,
+    pub weekday: &'a str,
 }
 
 #[derive(Debug, Deserialize, Serialize, Validate)]
