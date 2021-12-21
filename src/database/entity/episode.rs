@@ -1,9 +1,7 @@
+use crate::schema::{episode_historys, episodes};
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
-use validator::Validate;
-
-use crate::schema::{episode_historys, episodes};
 
 #[derive(Debug, Deserialize, Queryable, Identifiable, Serialize)]
 pub struct Episode {
@@ -37,9 +35,8 @@ pub struct EpisodeHistory {
     pub updated_at: DateTime<Utc>,
 }
 
-
 #[derive(Debug, Deserialize, Serialize)]
-pub struct EpisodeOutput{
+pub struct EpisodeJson {
     /// 章节ID
     pub id: i32,
     /// 所属书籍

@@ -1,6 +1,4 @@
 use crate::config::CONFIG;
-use crate::errors::Error;
-
 use argon2rs::argon2i_simple;
 
 /// Encrypt a password
