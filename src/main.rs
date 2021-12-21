@@ -11,12 +11,12 @@ mod database;
 mod errors;
 mod handlers;
 mod helpers;
-mod middleware;
-mod utils;
+mod middlewares;
 mod routes;
 mod schema;
 mod server;
 mod tests;
+mod utils;
 mod validate;
 
 #[actix_web::main]
