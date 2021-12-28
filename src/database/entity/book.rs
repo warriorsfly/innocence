@@ -6,6 +6,7 @@ use validator::Validate;
 use crate::schema::books;
 
 #[derive(Deserialize, Serialize, Debug, Queryable, Selectable)]
+#[serde(rename_all = "camelCase")]
 pub struct Book {
     /// ID
     pub id: i32,
