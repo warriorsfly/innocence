@@ -7,12 +7,12 @@ edition = "2021"
 
 
 [dependencies]
-actix-cors ="0.6.0-beta.7"
-actix-files ="0.6.0-beta.11"
-actix-web = "4.0.0-beta.16"
+actix-cors ="0.6.0-beta.8"
+actix-files ="0.6.0-beta.12"
+actix-web = "4.0.0-beta.18"
 
 argon2rs = "0.2"
-awc = "3.0.0-beta.15"
+awc = "3.0.0-beta.17"
 chrono ={version = "0.4",features = ["serde"]}
 
 diesel = {git = "https://github.com/diesel-rs/diesel", features = ["chrono", "postgres","r2d2", "serde_json"]}
