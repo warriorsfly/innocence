@@ -1,8 +1,10 @@
 use diesel::prelude::*;
+use innocence_utils::Error;
 
 use crate::{
-    database::{Book, Database, Episode, EpisodeHistory, NewBook},
-    errors::Error};
+    entity::{Book, Episode, EpisodeHistory, NewBook},
+    Database,
+};
 
 pub fn create_book<'a>(pool: &'a Database, entity: &'a NewBook) -> Result<Book, Error> {
     use crate::schema::books::dsl::*;
@@ -28,13 +30,9 @@ pub fn get_favorite_books(pool: &Database, entity_id: i32) -> Result<Vec<Book>, 
     Ok(list)
 }
 
-pub fn get_book_episodes(
-    pool: &Database,
-    user: i32,
-    book: i32,
-) -> Result<Vec<Episode>, Error> {
+pub fn get_book_episodes(pool: &Database, user: i32, book: i32) -> Result<Vec<Episode>, Error> {
     use crate::schema::{episode_historys, episodes};
-let ref mut conn = pool.get()?;
+    let ref mut conn = pool.get()?;
     let eps = episodes::table
         .filter(episodes::book_id.eq(book))
         .get_results(conn)?;

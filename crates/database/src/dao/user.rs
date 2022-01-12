@@ -1,9 +1,8 @@
 use diesel::prelude::*;
-
+use innocence_utils::{create_jwt, hash, Claims,Error};
 use crate::{
-    database::{Database, NewUser, User, UserLoginOutput},
-    errors::Error,
-    utils::{create_jwt, hash, Claims},
+    entity::{NewUser, User, UserLoginOutput},
+    Database,
 };
 
 pub(crate) fn signup<'a>(pool: &'a Database, entity: &'a NewUser) -> Result<User, Error> {

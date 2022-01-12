@@ -1,17 +1,19 @@
 use actix_web::web::{block, Data, Json, Path};
 
-use crate::{
-    database::{self, Database, Book, Episode},
-    errors::Error,
-    helpers::respond_json,
-    utils::Claims,
+use innocence_database::{
+    dao,
+    entity::{Book, Episode},
+    Database,
 };
+
+use crate::helpers::respond_json;
+use innocence_utils::{Claims, Error};
 
 // pub async fn create_book(pool: Data<Database>, entity: Json) -> Result<Book, Error> {}
 
 // / 搜索
 pub async fn search(pool: Data<Database>, tag: Path<String>) -> Result<Json<Vec<Book>>, Error> {
-    let res = block(move || database::search(&pool, &tag)).await??;
+    let res = block(move || dao::search(&pool, &tag)).await??;
     respond_json(res)
 }
 
@@ -19,9 +21,7 @@ pub async fn books_of_weekday(
     pool: Data<Database>,
     weekday: Path<String>,
 ) -> Result<Json<Vec<Book>>, Error> {
- 
-
-    let res = block(move || database::books_of_weekday(&pool, &weekday)).await??;
+    let res = block(move || dao::books_of_weekday(&pool, &weekday)).await??;
 
     respond_json(res)
 }
@@ -39,7 +39,7 @@ pub async fn get_book_episodes(
         user = claims.id;
     }
 
-    let res = block(move || database::get_book_episodes(&pool, user, book_id)).await??;
+    let res = block(move || dao::get_book_episodes(&pool, user, book_id)).await??;
     respond_json(res)
 }
 // // / 广告
