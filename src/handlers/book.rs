@@ -5,9 +5,25 @@ use innocence_database::{
     entity::{Book, Episode},
     Database,
 };
+use serde::{Deserialize, Serialize};
+use validator::Validate;
 
 use crate::helpers::respond_json;
 use innocence_utils::{Claims, Error};
+
+
+#[derive(Debug, Deserialize, Serialize, Validate)]
+pub struct NewBookInput {
+    pub authors: String,
+    pub slug: String,
+    #[validate(length(min = 1))]
+    pub name: String,
+    #[validate(length(min = 1))]
+    pub description: String,
+    pub cover: String,
+    pub tags: Vec<String>,
+    pub day_of_week: i32,
+}
 
 // pub async fn create_book(pool: Data<Database>, entity: Json) -> Result<Book, Error> {}
 

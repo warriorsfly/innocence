@@ -1,3 +1,4 @@
+mod bill;
 mod book;
 mod episode;
 mod user;

@@ -1,9 +1,7 @@
+use crate::schema::users;
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
-use validator::Validate;
-
-use crate::schema::users;
 
 #[derive(Debug, Deserialize, Queryable, Identifiable, Serialize)]
 pub struct User {
@@ -35,36 +33,4 @@ pub struct UserChange {
     pub password: Option<String>,
     pub bio: Option<String>,
     pub avatar: Option<String>,
-}
-
-#[derive(Debug, Deserialize, Validate)]
-pub struct NewUserInput {
-    pub username: String,
-    #[validate(email(message = "email must be a valid email"))]
-    pub email: String,
-    #[validate(length(min = 6))]
-    pub password: String,
-    pub bio: Option<String>,
-    pub avatar: Option<String>,
-}
-
-#[derive(Debug, Deserialize, Validate)]
-pub struct UpdateUserInput {
-    pub username: Option<String>,
-    pub email: Option<String>,
-    pub password: Option<String>,
-    pub bio: Option<String>,
-    pub avatar: Option<String>,
-}
-
-#[derive(Debug, Deserialize, Validate)]
-pub struct UserLoginInput {
-    pub name: String,
-    pub password: String,
-}
-
-#[derive(Debug, Serialize, Validate)]
-pub struct UserLoginOutput {
-    pub token: String,
-    pub account: User,
 }

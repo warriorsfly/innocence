@@ -16,11 +16,11 @@ extern crate lazy_static;
 pub mod awc;
 mod config;
 pub mod constants;
-mod hash;
-mod jwt;
+mod encrypt;
+mod authorization;
 mod mail;
 mod validate;
-pub use self::{config::*, hash::*, jwt::*, mail::*,validate::*};
+pub use self::{config::*, encrypt::*, authorization::*, mail::*,validate::*};
 
 #[derive(Debug, Display, PartialEq, Serialize)]
 pub enum Error {

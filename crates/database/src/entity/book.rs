@@ -1,7 +1,7 @@
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
-use validator::Validate;
+
 
 use crate::schema::books;
 
@@ -41,22 +41,5 @@ pub struct NewBook<'a> {
     pub weekday: &'a str,
 }
 
-#[derive(Debug, Deserialize, Serialize, Validate)]
-pub struct NewBookInput {
-    pub authors: String,
-    pub slug: String,
-    #[validate(length(min = 1))]
-    pub name: String,
-    #[validate(length(min = 1))]
-    pub description: String,
-    pub cover: String,
-    pub tags: Vec<String>,
-    pub day_of_week: i32,
-}
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct Bill {
-    pub id: i32,
-    pub user: i32,
-}
 
