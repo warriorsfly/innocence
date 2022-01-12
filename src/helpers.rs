@@ -1,7 +1,7 @@
 use actix_web::web::Json;
 use serde::Serialize;
 
-use crate::errors::Error;
+use innocence_utils::Error;
 /// 快速组装Ok/Json response
 pub fn respond_json<T>(data: T) -> Result<Json<T>, Error>
 where

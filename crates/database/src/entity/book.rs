@@ -1,11 +1,12 @@
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
-use validator::Validate;
+
 
 use crate::schema::books;
 
 #[derive(Deserialize, Serialize, Debug, Queryable, Selectable)]
+#[serde(rename_all = "camelCase")]
 pub struct Book {
     /// ID
     pub id: i32,
@@ -19,7 +20,7 @@ pub struct Book {
     pub description: String,
     /// 标签
     pub tags: Vec<String>,
-    pub day_of_week: i32,
+    pub weekday: String,
     /// 喜爱数量
     pub favorites_count: i32,
     pub completed: bool,
@@ -37,25 +38,8 @@ pub struct NewBook<'a> {
     pub description: &'a str,
     pub cover: &'a str,
     pub tags: &'a Vec<String>,
-    pub day_of_week: &'a i32,
+    pub weekday: &'a str,
 }
 
-#[derive(Debug, Deserialize, Serialize, Validate)]
-pub struct NewBookInput {
-    pub authors: String,
-    pub slug: String,
-    #[validate(length(min = 1))]
-    pub name: String,
-    #[validate(length(min = 1))]
-    pub description: String,
-    pub cover: String,
-    pub tags: Vec<String>,
-    pub day_of_week: i32,
-}
 
-#[derive(Deserialize, Serialize, Debug)]
-pub struct Bill {
-    pub id: i32,
-    pub user: i32,
-}
 

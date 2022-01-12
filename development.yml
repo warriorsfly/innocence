@@ -1,16 +1,56 @@
 apiVersion: v1
-kind: Pod
+kind: Deployment
 metadata:
   name: innocence
-  labels:
-    name: innocence
 spec:
-  containers:
-  - name: innocence
-    image: warriorsfly/innocence
-    resources:
-      limits:
-        memory: "128Mi"
-        cpu: "500m"
-    ports:
-      - containerPort: 3000
+  selector:
+    matchLabels:
+      app: innocence
+  template:
+    metadata:
+      labels:
+        app: innocence
+    spec:
+      containers:
+      - name: innocence
+        image: celestialbeing13/innocence
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3000
+      - name: postgres
+        image: postgres:alpine
+       
+# metadata:
+#   name: innocence
+#   labels:
+#     name: innocence
+# spec:
+#   containers:
+#   - name: innocence
+#     image: celestialbeing13/innocence
+#     env:
+#     - name: SALT
+#       value: "61400991"
+#     - name: REDIS_URL
+#       value: redis://127.0.0.1:6379
+#     - name: DATABASE_URL
+#       value: postgres://allen:walker@127.0.0.1/innocence
+#     - name: BACKTRACE
+#       value: "1"
+#     - name: LOG
+#       value: actix_web = info
+#     - name: SERVER
+#       value: 127.0.0.1:3000
+#     - name: JWT_KEY
+#       value: "61400991"
+#     - name: JWT_EXPIRATION
+#       value: "3600"
+#     resources:
+#       limits:
+#         memory: "128Mi"
+#         cpu: "500m"
+#     ports:
+#       - containerPort: 3000

@@ -1,18 +1,19 @@
-use crate::config::CONFIG;
+
 use actix_web::web::{Data, ServiceConfig};
 use diesel::{
     r2d2::{ConnectionManager, Pool, PooledConnection},
     PgConnection,
 };
+use innocence_utils::CONFIG;
 
-mod billing;
-mod book;
-mod model;
-mod pagination;
-mod user;
+#[macro_use]
+extern crate diesel;
 
-pub(crate) use self::{book::*, model::*, user::*};
 
+pub mod dao;
+pub mod entity;
+// mod pagination;
+mod schema;
 pub type Database = Pool<ConnectionManager<PgConnection>>;
 pub type Connection = PooledConnection<ConnectionManager<PgConnection>>;
 

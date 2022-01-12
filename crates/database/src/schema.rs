@@ -1,4 +1,13 @@
 table! {
+    banners (id) {
+        id -> Int4,
+        url -> Text,
+        created_at -> Timestamptz,
+        updated_at -> Timestamptz,
+    }
+}
+
+table! {
     books (id) {
         id -> Int4,
         authors -> Array<Text>,
@@ -7,7 +16,7 @@ table! {
         cover -> Text,
         description -> Text,
         tags -> Array<Text>,
-        day_of_week -> Int4,
+        weekday -> Text,
         favorites_count -> Int4,
         completed -> Bool,
         created_at -> Timestamptz,
@@ -78,6 +87,7 @@ joinable!(reading_historys -> books (book_id));
 joinable!(reading_historys -> users (user_id));
 
 allow_tables_to_appear_in_same_query!(
+    banners,
     books,
     episode_historys,
     episodes,

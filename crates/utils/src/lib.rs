@@ -1,5 +1,5 @@
 use actix_web::{
-    error::ResponseError,
+    error::{BlockingError, ResponseError},
     http::{header, StatusCode},
     HttpResponse, HttpResponseBuilder,
 };
@@ -10,6 +10,17 @@ use diesel::{
 };
 use serde::{Deserialize, Serialize};
 use std::ops::Deref;
+
+#[macro_use]
+extern crate lazy_static;
+pub mod awc;
+mod config;
+pub mod constants;
+mod encrypt;
+mod authorization;
+mod mail;
+mod validate;
+pub use self::{config::*, encrypt::*, authorization::*, mail::*,validate::*};
 
 #[derive(Debug, Display, PartialEq, Serialize)]
 pub enum Error {
@@ -84,5 +95,12 @@ impl From<DBError> for Error {
 impl From<PoolError> for Error {
     fn from(error: PoolError) -> Error {
         Error::DataBaseError(error.to_string())
+    }
+}
+
+/// Convert BlockingError to ServiceErrors
+impl From<BlockingError> for Error {
+    fn from(error: BlockingError) -> Error {
+        Error::InternalServerError(error.to_string())
     }
 }

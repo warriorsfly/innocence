@@ -1,5 +1,6 @@
-use crate::{config::CONFIG, database::add_database, routes::routes};
-
+use crate::{ routes::routes};
+use innocence_utils::CONFIG;
+use innocence_database::add_database;
 use actix_cors::Cors;
 use actix_web::{middleware::Logger, App, HttpServer};
 

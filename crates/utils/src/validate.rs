@@ -1,8 +1,6 @@
 use actix_web::web::Json;
 use validator::{Validate, ValidationErrors};
-
-use crate::errors::Error;
-
+use super::Error;
 pub fn validate<T>(params: &Json<T>) -> Result<(), Error>
 where
     T: Validate,

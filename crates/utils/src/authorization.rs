@@ -1,6 +1,6 @@
 use crate::constants::BEARER_PREFIX;
 use crate::{config::CONFIG, constants::AUTHORIZATION_PREFIX};
-use crate::errors::Error;
+use super::Error;
 use actix_web::FromRequest;
 
 use chrono::{Duration, Utc};
