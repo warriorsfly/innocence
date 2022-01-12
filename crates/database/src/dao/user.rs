@@ -5,7 +5,7 @@ use crate::{
     Database,
 };
 
-pub(crate) fn signup<'a>(pool: &'a Database, entity: &'a NewUser) -> Result<User, Error> {
+pub fn signup<'a>(pool: &'a Database, entity: &'a NewUser) -> Result<User, Error> {
     use crate::schema::users::dsl::*;
     let ref mut conn = pool.get()?;
     diesel::insert_into(users)
@@ -14,7 +14,7 @@ pub(crate) fn signup<'a>(pool: &'a Database, entity: &'a NewUser) -> Result<User
         .map_err(|err| Error::DataBaseError(err.to_string()))
 }
 
-pub(crate) fn login<'a>(
+pub fn login<'a>(
     pool: &'a Database,
     name: &'a str,
     psw: &'a str,

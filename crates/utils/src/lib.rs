@@ -19,7 +19,8 @@ pub mod constants;
 mod hash;
 mod jwt;
 mod mail;
-pub use self::{config::*, hash::*, jwt::*, mail::*};
+mod validate;
+pub use self::{config::*, hash::*, jwt::*, mail::*,validate::*};
 
 #[derive(Debug, Display, PartialEq, Serialize)]
 pub enum Error {

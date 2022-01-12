@@ -1,12 +1,7 @@
 use actix_web::web::{block, Data, Json};
-
-use crate::{
-    database::{self, Database, NewUser, NewUserInput, User, UserLoginInput, UserLoginOutput},
-    errors::Error,
-    helpers::respond_json,
-    utils::hash,
-    validate::validate,
-};
+use innocence_database::{ Database, dao, entity::{ NewUser, NewUserInput, User, UserLoginInput, UserLoginOutput}};
+use innocence_utils::{validate, hash, Error};
+use crate::helpers::respond_json;
 
 pub async fn signup(pool: Data<Database>, entity: Json<NewUserInput>) -> Result<Json<User>, Error> {
     validate(&entity)?;
@@ -20,7 +15,7 @@ pub async fn signup(pool: Data<Database>, entity: Json<NewUserInput>) -> Result<
             bio: "",
             avatar: "",
         };
-        database::signup(&pool, &ur)
+        dao::signup(&pool, &ur)
     })
     .await??;
     respond_json(us)
@@ -30,6 +25,6 @@ pub async fn login(
     entity: Json<UserLoginInput>,
 ) -> Result<Json<UserLoginOutput>, Error> {
     validate(&entity)?;
-    let res = block(move || database::login(&pool, &entity.name, &entity.password)).await??;
+    let res = block(move || dao::login(&pool, &entity.name, &entity.password)).await??;
     respond_json(res)
 }
