@@ -5,16 +5,16 @@ edition = "2021"
 
 [workspace]
 members=[
-    "crates/database",
+    "crates/schema",
     "crates/utils"
 ]
 
 [dependencies]
-innocence-database = { version = "0.1.0", path = "./crates/database" }
+innocence-schema = { version = "0.1.0", path = "./crates/schema" }
 innocence-utils = { version = "0.1.0", path = "./crates/utils" }
 actix-cors ="0.6.0-beta.8"
-actix-files ="0.6.0-beta.13"
-actix-web = "4.0.0-beta.19"
+actix-files ="0.6.0-beta.14"
+actix-web = "4.0.0-beta.20"
 
 argon2rs = "0.2"
 awc = "3.0.0-beta.18"
