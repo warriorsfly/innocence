@@ -5,12 +5,12 @@ edition = "2021"
 
 [workspace]
 members=[
-    "crates/schema",
+    "crates/db-schema",
     "crates/utils"
 ]
 
 [dependencies]
-innocence-schema = { version = "0.1.0", path = "./crates/schema" }
+innocence-db-schema = { version = "0.1.0", path = "./crates/db-schema" }
 innocence-utils = { version = "0.1.0", path = "./crates/utils" }
 actix-cors ="0.6.0-beta.8"
 actix-files ="0.6.0-beta.14"
