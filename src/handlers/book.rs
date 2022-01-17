@@ -1,6 +1,6 @@
 use actix_web::web::{block, Data, Json, Path};
 
-use innocence_database::{
+use innocence_db_schema::{
     dao,
     entity::{Book, Episode},
     Database,
@@ -10,7 +10,6 @@ use validator::Validate;
 
 use crate::helpers::respond_json;
 use innocence_utils::{Claims, Error};
-
 
 #[derive(Debug, Deserialize, Serialize, Validate)]
 pub struct NewBookInput {

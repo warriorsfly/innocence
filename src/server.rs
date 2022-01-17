@@ -1,8 +1,8 @@
-use crate::{ routes::routes};
-use innocence_utils::CONFIG;
-use innocence_database::add_database;
+use crate::routes::routes;
 use actix_cors::Cors;
 use actix_web::{middleware::Logger, App, HttpServer};
+use innocence_db_schema::add_database;
+use innocence_utils::CONFIG;
 
 pub(crate) async fn serv() -> std::io::Result<()> {
     env_logger::init();

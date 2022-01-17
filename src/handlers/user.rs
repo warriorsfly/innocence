@@ -1,6 +1,6 @@
 use crate::helpers::respond_json;
 use actix_web::web::{block, Data, Json};
-use innocence_database::{
+use innocence_db_schema::{
     dao,
     entity::{NewUser, User},
     Database,
