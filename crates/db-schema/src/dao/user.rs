@@ -3,7 +3,7 @@ use crate::{
     Database,
 };
 use diesel::prelude::*;
-use innocence_utils::{create_jwt, hash, Claims, Error};
+use innocence_utils::{hash, Error};
 
 pub fn signup<'a>(pool: &'a Database, entity: &'a NewUser) -> Result<User, Error> {
     use crate::schema::users::dsl::*;

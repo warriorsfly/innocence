@@ -10,7 +10,7 @@ use serde::{Deserialize, Serialize};
 use validator::Validate;
 
 #[derive(Debug, Deserialize, Validate)]
-pub struct NewUserInput {
+pub struct UserForm {
     pub username: String,
     #[validate(email(message = "email must be a valid email"))]
     pub email: String,
@@ -21,7 +21,7 @@ pub struct NewUserInput {
 }
 
 #[derive(Debug, Deserialize, Validate)]
-pub struct UpdateUserInput {
+pub struct PatchUserForm {
     pub username: Option<String>,
     pub email: Option<String>,
     pub password: Option<String>,
@@ -30,18 +30,18 @@ pub struct UpdateUserInput {
 }
 
 #[derive(Debug, Deserialize, Validate)]
-pub struct UserLoginInput {
+pub struct LoginForm {
     pub name: String,
     pub password: String,
 }
 
 #[derive(Debug, Serialize)]
-pub struct UserLoginOutput {
+pub struct UserToken {
     pub token: String,
     pub account: User,
 }
 
-pub async fn signup(pool: Data<Database>, entity: Json<NewUserInput>) -> Result<Json<User>, Error> {
+pub async fn signup(pool: Data<Database>, entity: Json<UserForm>) -> Result<Json<User>, Error> {
     validate(&entity)?;
     let psw = hash(&entity.password);
 
@@ -60,12 +60,12 @@ pub async fn signup(pool: Data<Database>, entity: Json<NewUserInput>) -> Result<
 }
 pub async fn login(
     pool: Data<Database>,
-    entity: Json<UserLoginInput>,
-) -> Result<Json<UserLoginOutput>, Error> {
+    entity: Json<LoginForm>,
+) -> Result<Json<UserToken>, Error> {
     validate(&entity)?;
     let ur = block(move || dao::login(&pool, &entity.name, &entity.password)).await??;
     let claims = Claims::new(ur.id);
-    let res = UserLoginOutput {
+    let res = UserToken {
         token: create_jwt(claims)?,
         account: ur,
     };
