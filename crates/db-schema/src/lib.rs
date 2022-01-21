@@ -11,7 +11,7 @@ extern crate diesel;
 
 
 pub mod dao;
-pub mod entity;
+pub mod structs;
 // mod pagination;
 mod schema;
 pub type Database = Pool<ConnectionManager<PgConnection>>;

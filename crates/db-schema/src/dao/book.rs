@@ -2,7 +2,7 @@ use diesel::prelude::*;
 use innocence_utils::Error;
 
 use crate::{
-    entity::{Book, Episode, EpisodeHistory, NewBook},
+    structs::{Book, Episode, EpisodeHistory, NewBook},
     Database,
 };
 

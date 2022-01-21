@@ -2,7 +2,7 @@ use actix_web::web::{block, Data, Json, Path};
 
 use innocence_db_schema::{
     dao,
-    entity::{Book, Episode},
+    structs::{Book, Episode},
     Database,
 };
 use serde::{Deserialize, Serialize};

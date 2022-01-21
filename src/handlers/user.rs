@@ -2,7 +2,7 @@ use crate::helpers::respond_json;
 use actix_web::web::{block, Data, Json};
 use innocence_db_schema::{
     dao,
-    entity::{NewUser, User},
+    structs::{NewUser, User},
     Database,
 };
 use innocence_utils::{create_jwt, hash, validate, Claims, Error};

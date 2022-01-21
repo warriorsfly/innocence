@@ -1,5 +1,5 @@
 use crate::{
-    entity::{NewUser, User},
+    structs::{NewUser, User},
     Database,
 };
 use diesel::prelude::*;
