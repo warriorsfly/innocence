@@ -1,8 +1,9 @@
 use diesel::prelude::*;
+use diesel::query_source::aliasing::FieldAliasMapper;
 use innocence_utils::Error;
 
 use crate::{
-    structs::{Book, Episode, EpisodeHistory, NewBook},
+    structs::{Book, Episode, EpisodeHistory, NewBook, EpisodeJson},
     Database,
 };
 
@@ -30,17 +31,27 @@ pub fn get_favorite_books(pool: &Database, entity_id: i32) -> Result<Vec<Book>, 
     Ok(list)
 }
 
-pub fn get_book_episodes(pool: &Database, user: i32, book: i32) -> Result<Vec<Episode>, Error> {
+pub fn get_book_episodes(pool: &Database, user: i32, book: i32) -> Result<Vec<EpisodeJson>, Error> {
     use crate::schema::{episode_historys, episodes};
     let ref mut conn = pool.get()?;
-    let eps = episodes::table
+    let eps= episodes::table.left_join(episode_historys::table.on(episode_historys::episode_id.eq(episodes::id).and(episode_historys::user_id.eq(user))))
+    
         .filter(episodes::book_id.eq(book))
-        .get_results(conn)?;
-    let mine_eps: Vec<EpisodeHistory> = episode_historys::table
-        .filter(episode_historys::user_id.eq(user))
-        .filter(episode_historys::book_id.eq(book))
-        .get_results(conn)?;
-    Ok(eps)
+        
+        .load::<(Episode,Option<EpisodeHistory>)>(conn)?;
+    
+    // Ok(eps)
+     let res = eps.iter().map
+     (|(e, h)| EpisodeJson {
+            id: e.id,
+            book: e.book,
+            name: e.name.clone(),
+            price: e.price,
+            readable: h.is_some(),
+            created_at: e.created_at,
+            updated_at: e.updated_at,
+        });
+    Ok(res.collect())
 }
 
 pub fn search(pool: &Database, tag: &str) -> Result<Vec<Book>, Error> {

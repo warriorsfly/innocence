@@ -20,7 +20,8 @@ mod encrypt;
 mod authorization;
 mod mail;
 mod validate;
-pub use self::{config::*, encrypt::*, authorization::*, mail::*,validate::*};
+mod pagination;
+pub use self::{config::*, encrypt::*, authorization::*, mail::*,pagination::*,validate::*};
 
 #[derive(Debug, Display, PartialEq, Serialize)]
 pub enum Error {

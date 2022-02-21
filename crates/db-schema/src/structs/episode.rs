@@ -45,8 +45,8 @@ pub struct EpisodeJson {
     pub name: String,
     /// 价格
     pub price: i32,
-    /// 是否已经单章节购买
-    pub buyed: bool,
+    /// 是否锁定
+    pub readable: bool,
     /// 创建时间
     pub created_at: DateTime<Utc>,
     /// 更新时间

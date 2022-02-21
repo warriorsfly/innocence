@@ -2,7 +2,7 @@ use actix_web::web::{block, Data, Json, Path};
 
 use innocence_db_schema::{
     dao,
-    structs::{Book, Episode},
+    structs::{Book, Episode, EpisodeJson},
     Database,
 };
 use serde::{Deserialize, Serialize};
@@ -45,7 +45,7 @@ pub async fn get_book_episodes(
     claims: Option<Claims>,
     pool: Data<Database>,
     entity: Path<String>,
-) -> Result<Json<Vec<Episode>>, Error> {
+) -> Result<Json<Vec<EpisodeJson>>, Error> {
     let book_id = entity
         .parse::<i32>()
         .map_err(|e| Error::BadRequest(e.to_string()))?;
