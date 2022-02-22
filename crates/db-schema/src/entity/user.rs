@@ -16,7 +16,7 @@ pub struct User {
     pub updated_at: DateTime<Utc>,
 }
 #[derive(Debug, Insertable)]
-#[table_name = "users"]
+#[diesel(table_name = users)]
 pub struct NewUser<'a> {
     pub username: &'a str,
     pub email: &'a str,
@@ -26,7 +26,7 @@ pub struct NewUser<'a> {
 }
 
 #[derive(Debug, AsChangeset)]
-#[table_name = "users"]
+#[diesel(table_name = users)]
 pub struct UserChange {
     pub username: Option<String>,
     pub email: Option<String>,

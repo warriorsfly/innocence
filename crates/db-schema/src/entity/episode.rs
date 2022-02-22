@@ -1,4 +1,4 @@
-use crate::schema::{episode_historys, episodes};
+use crate::schema::episodes;
 use chrono::{DateTime, Utc};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};

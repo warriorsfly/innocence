@@ -9,10 +9,9 @@ use innocence_utils::CONFIG;
 #[macro_use]
 extern crate diesel;
 
+pub mod repository;
+pub mod entity;
 
-pub mod dao;
-pub mod structs;
-// mod pagination;
 mod schema;
 pub type Database = Pool<ConnectionManager<PgConnection>>;
 pub type Connection = PooledConnection<ConnectionManager<PgConnection>>;

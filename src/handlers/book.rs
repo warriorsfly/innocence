@@ -1,9 +1,8 @@
 use actix_web::web::{block, Data, Json, Path};
 
 use innocence_db_schema::{
-    dao,
-    structs::{Book, Episode, EpisodeJson},
-    Database,
+    entity::{Book, EpisodeJson},
+    repository, Database,
 };
 use serde::{Deserialize, Serialize};
 use validator::Validate;
@@ -28,7 +27,7 @@ pub struct NewBookInput {
 
 // / 搜索
 pub async fn search(pool: Data<Database>, tag: Path<String>) -> Result<Json<Vec<Book>>, Error> {
-    let res = block(move || dao::search(&pool, &tag)).await??;
+    let res = block(move || repository::search(&pool, &tag)).await??;
     respond_json(res)
 }
 
@@ -36,7 +35,7 @@ pub async fn books_of_weekday(
     pool: Data<Database>,
     weekday: Path<String>,
 ) -> Result<Json<Vec<Book>>, Error> {
-    let res = block(move || dao::books_of_weekday(&pool, &weekday)).await??;
+    let res = block(move || repository::books_of_weekday(&pool, &weekday)).await??;
 
     respond_json(res)
 }
@@ -44,17 +43,22 @@ pub async fn books_of_weekday(
 pub async fn get_book_episodes(
     claims: Option<Claims>,
     pool: Data<Database>,
-    entity: Path<String>,
-) -> Result<Json<Vec<EpisodeJson>>, Error> {
-    let book_id = entity
-        .parse::<i32>()
-        .map_err(|e| Error::BadRequest(e.to_string()))?;
-    let mut user = 0;
-    if let Some(claims) = claims {
-        user = claims.id;
-    }
+    slug: Path<String>,
+    page_index: Path<i64>,
+    page_size: Path<i64>,
+) -> Result<Json<(Vec<EpisodeJson>, i64)>, Error> {
+    let user = claims.map(|cl| cl.id).unwrap_or(0);
 
-    let res = block(move || dao::get_book_episodes(&pool, user, book_id)).await??;
+    let res = block(move || {
+        repository::get_book_episodes(
+            &pool,
+            user,
+            slug.as_str(),
+            page_index.into_inner(),
+            page_size.into_inner(),
+        )
+    })
+    .await??;
     respond_json(res)
 }
 // // / 广告

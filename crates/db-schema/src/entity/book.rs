@@ -30,7 +30,7 @@ pub struct Book {
     pub updated_at: DateTime<Utc>,
 }
 #[derive(Debug, Insertable)]
-#[table_name = "books"]
+#[diesel(table_name = books)]
 pub struct NewBook<'a> {
     pub authors: &'a Vec<String>,
     pub slug: &'a str,

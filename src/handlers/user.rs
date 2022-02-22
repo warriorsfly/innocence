@@ -1,9 +1,8 @@
 use crate::helpers::respond_json;
 use actix_web::web::{block, Data, Json};
 use innocence_db_schema::{
-    dao,
-    structs::{NewUser, User},
-    Database,
+    entity::{NewUser, User},
+    repository, Database,
 };
 use innocence_utils::{create_jwt, hash, validate, Claims, Error};
 use serde::{Deserialize, Serialize};
@@ -53,7 +52,7 @@ pub async fn signup(pool: Data<Database>, entity: Json<UserForm>) -> Result<Json
             bio: "",
             avatar: "",
         };
-        dao::signup(&pool, &ur)
+        repository::signup(&pool, &ur)
     })
     .await??;
     respond_json(us)
@@ -63,7 +62,7 @@ pub async fn login(
     entity: Json<LoginForm>,
 ) -> Result<Json<UserToken>, Error> {
     validate(&entity)?;
-    let ur = block(move || dao::login(&pool, &entity.name, &entity.password)).await??;
+    let ur = block(move || repository::login(&pool, &entity.name, &entity.password)).await??;
     let claims = Claims::new(ur.id);
     let res = UserToken {
         token: create_jwt(claims)?,

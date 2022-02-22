@@ -1,9 +1,8 @@
 use diesel::prelude::*;
-use diesel::query_source::aliasing::FieldAliasMapper;
-use innocence_utils::Error;
+use innocence_utils::{Error,Paginate};
 
 use crate::{
-    structs::{Book, Episode, EpisodeHistory, NewBook, EpisodeJson},
+    entity::{Book, Episode, NewBook, EpisodeJson},
     Database,
 };
 
@@ -31,14 +30,15 @@ pub fn get_favorite_books(pool: &Database, entity_id: i32) -> Result<Vec<Book>, 
     Ok(list)
 }
 
-pub fn get_book_episodes(pool: &Database, user: i32, book: i32) -> Result<Vec<EpisodeJson>, Error> {
-    use crate::schema::{episode_historys, episodes};
+pub fn get_book_episodes(pool: &Database, user: i32, slug: &str,page_index:i64,page_size:i64) -> Result<(Vec<EpisodeJson>,i64), Error> {
+    use crate::schema::{books,episode_historys, episodes};
     let ref mut conn = pool.get()?;
-    let eps= episodes::table.left_join(episode_historys::table.on(episode_historys::episode_id.eq(episodes::id).and(episode_historys::user_id.eq(user))))
-    
-        .filter(episodes::book_id.eq(book))
-        
-        .load::<(Episode,Option<EpisodeHistory>)>(conn)?;
+    let (eps,total_pages)= episodes::table
+    .left_join(episode_historys::table.on(episode_historys::episode_id.eq(episodes::id).and(episode_historys::user_id.eq(user))))
+    .inner_join(books::table.on(books::id.eq(episodes::book_id).and(books::slug.eq(slug))))
+    .select((episodes::all_columns, episode_historys::episode_id.nullable()))
+    .paginate(page_index).per_page(page_size)
+        .load_and_count_pages::<(Episode,Option<i32>)>(conn)?;
     
     // Ok(eps)
      let res = eps.iter().map
@@ -51,7 +51,7 @@ pub fn get_book_episodes(pool: &Database, user: i32, book: i32) -> Result<Vec<Ep
             created_at: e.created_at,
             updated_at: e.updated_at,
         });
-    Ok(res.collect())
+    Ok((res.collect(),total_pages))
 }
 
 pub fn search(pool: &Database, tag: &str) -> Result<Vec<Book>, Error> {
