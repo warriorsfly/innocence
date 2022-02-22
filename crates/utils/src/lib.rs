@@ -17,11 +17,11 @@ pub mod awc;
 mod config;
 pub mod constants;
 mod encrypt;
-mod authorization;
+mod claims;
 mod mail;
 mod validate;
 mod pagination;
-pub use self::{config::*, encrypt::*, authorization::*, mail::*,pagination::*,validate::*};
+pub use self::{config::*, encrypt::*, claims::*, mail::*,pagination::*,validate::*};
 
 #[derive(Debug, Display, PartialEq, Serialize)]
 pub enum Error {

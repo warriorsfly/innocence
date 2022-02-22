@@ -47,7 +47,7 @@ pub async fn get_book_episodes(
     page_index: Path<i64>,
     page_size: Path<i64>,
 ) -> Result<Json<(Vec<EpisodeJson>, i64)>, Error> {
-    let user = claims.map(|cl| cl.id).unwrap_or(0);
+    let user = claims.map(|cl| cl.sub).unwrap_or(0);
 
     let res = block(move || {
         repository::get_book_episodes(
