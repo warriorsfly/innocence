@@ -10,15 +10,19 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct Claims {
-    pub id: i32,
-    pub exp: i64,
+      /// local_user_id, standard claim by RFC 7519.
+  pub sub: i32,
+  pub iss: String,
+  /// Time when this token was issued as UNIX-timestamp in seconds
+  pub iat: i64,
 }
 
 impl Claims {
     pub fn new(id: i32) -> Self {
         Self {
-            id,
-            exp: (Utc::now() + Duration::hours(CONFIG.jwt_expiration)).timestamp(),
+            sub:id,
+            iss:CONFIG.server.to_string(),
+            iat: (Utc::now() + Duration::hours(CONFIG.jwt_expiration)).timestamp(),
         }
     }
 }
