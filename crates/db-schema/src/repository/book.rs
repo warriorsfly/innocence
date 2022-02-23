@@ -15,19 +15,20 @@ pub fn create_book<'a>(pool: &'a Database, entity: &'a NewBook) -> Result<Book, 
         .map_err(|err| Error::DataBaseError(err.to_string()))
 }
 
-pub fn get_favorite_books(pool: &Database, entity_id: i32) -> Result<Vec<Book>, Error> {
+pub fn get_favorite_books(pool: &Database, ur_id: i32,page_index:i64,page_size:i64) -> Result<(Vec<Book>,i64), Error> {
     use crate::schema::{
         books::{self, dsl::*},
         favorite_books::{self, dsl::*},
     };
 
     let ref mut conn = pool.get()?;
-    let list = favorite_books
-        .filter(favorite_books::user_id.eq(entity_id))
+    let res = favorite_books
+        .filter(favorite_books::user_id.eq(ur_id))
         .inner_join(books.on(favorite_books::book_id.eq(books::id)))
         .select(books::all_columns)
-        .get_results(conn)?;
-    Ok(list)
+        .paginate(page_index).per_page(page_size)
+        .load_and_count_pages::<Book>(conn)?;
+    Ok(res)
 }
 
 pub fn get_book_episodes(pool: &Database, user: i32, slug: &str,page_index:i64,page_size:i64) -> Result<(Vec<EpisodeJson>,i64), Error> {

@@ -13,7 +13,9 @@ pub mod repository;
 pub mod entity;
 
 mod schema;
+// #[cfg(feature = "postgres")]
 pub type Database = Pool<ConnectionManager<PgConnection>>;
+// #[cfg(feature = "postgres")]
 pub type Connection = PooledConnection<ConnectionManager<PgConnection>>;
 
 pub fn add_database(cfg: &mut ServiceConfig) {
