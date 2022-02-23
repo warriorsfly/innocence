@@ -11,7 +11,7 @@ use crate::helpers::respond_json;
 use innocence_utils::{Claims, Error};
 
 #[derive(Debug, Deserialize, Serialize, Validate)]
-pub struct NewBookInput {
+pub struct NewBookForm {
     pub authors: String,
     pub slug: String,
     #[validate(length(min = 1))]
@@ -26,16 +26,22 @@ pub struct NewBookInput {
 // pub async fn create_book(pool: Data<Database>, entity: Json) -> Result<Book, Error> {}
 
 // / 搜索
-pub async fn search(pool: Data<Database>, tag: Path<String>) -> Result<Json<Vec<Book>>, Error> {
-    let res = block(move || repository::search(&pool, &tag)).await??;
+pub async fn search(pool: Data<Database>, tag: Path<String>, page_index: Path<i64>,
+    page_size: Path<i64>,) -> Result<Json<(Vec<Book>,i64)>, Error> {
+    let res = block(move || repository::search(&pool, &tag,
+            page_index.into_inner(),
+            page_size.into_inner(),)).await??;
     respond_json(res)
 }
 
 pub async fn books_of_weekday(
     pool: Data<Database>,
     weekday: Path<String>,
-) -> Result<Json<Vec<Book>>, Error> {
-    let res = block(move || repository::books_of_weekday(&pool, &weekday)).await??;
+    page_index: Path<i64>,
+    page_size: Path<i64>,
+) -> Result<Json<(Vec<Book>,i64)>, Error> {
+    let res = block(move || repository::books_of_weekday(&pool, &weekday,page_index.into_inner(),
+            page_size.into_inner(),)).await??;
 
     respond_json(res)
 }

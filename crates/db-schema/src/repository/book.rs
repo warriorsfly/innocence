@@ -55,23 +55,25 @@ pub fn get_book_episodes(pool: &Database, user: i32, slug: &str,page_index:i64,p
     Ok((res.collect(),total_pages))
 }
 
-pub fn search(pool: &Database, tag: &str) -> Result<Vec<Book>, Error> {
+pub fn search(pool: &Database, param: &str,page_index:i64,page_size:i64) -> Result<(Vec<Book>,i64), Error> {
     use crate::schema::books::dsl::*;
     let ref mut conn = pool.get()?;
     let res = books
-        .filter(name.like(&tag))
-        // .f(tags.contains(tag))
-        .get_results(conn)?;
+        .filter(name.like(param).or(tags.is_contained_by(vec![param])))
+        
+        .paginate(page_index).per_page(page_size)
+        .load_and_count_pages::<Book>(conn)?;
     Ok(res)
 }
 
-pub fn books_of_weekday(pool: &Database, wd: &str) -> Result<Vec<Book>, Error> {
+pub fn books_of_weekday(pool: &Database, wd: &str,page_index:i64,page_size:i64) -> Result<(Vec<Book>,i64), Error> {
     use crate::schema::books::dsl::*;
     let ref mut conn = pool.get()?;
-    let res: Vec<Book> = books
+    let res = books
         .filter(weekday.eq(wd))
         .order_by(updated_at.desc())
-        .get_results(conn)?;
+        .paginate(page_index).per_page(page_size)
+        .load_and_count_pages::<Book>(conn)?;
     Ok(res)
 }
 
